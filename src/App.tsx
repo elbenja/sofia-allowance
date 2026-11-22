@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { Add01Icon, ArrowLeft01Icon, ArrowRight01Icon, Cancel01Icon, SquareLock02Icon, SquareUnlock02Icon } from '@hugeicons/core-free-icons'
+import { Add01Icon, ArrowLeft01Icon, ArrowRight01Icon, Delete02Icon, SquareLock02Icon, SquareUnlock02Icon } from '@hugeicons/core-free-icons'
 import avatarUrl from './assets/avatar.png'
 import ChoresSheet from './ChoresSheet'
 import DogAvatar, { type DogHandle } from './DogAvatar'
@@ -290,7 +290,7 @@ export default function App() {
           </div>
         </section>
 
-        <section className="card log">
+        <section className={`card log${unlocked ? ' log--admin' : ''}`}>
           <div className="card__head">
             <h2>{monthName} log</h2>
             <span className="log__total">
@@ -313,8 +313,8 @@ export default function App() {
                       <span className="entry__name">{e.name}</span>
                       <span className="mono entry__amount">{money(e.amount)}</span>
                       {unlocked && (
-                        <Button variant="quiet" square className="entry__remove" aria-label={`Remove ${e.name}, ${dayLabel(e.date)}`} onClick={() => removeEntry(e)}>
-                          <Icon icon={Cancel01Icon} size={16} />
+                        <Button variant="quiet" className="entry__remove" aria-label={`Remove ${e.name}, ${dayLabel(e.date)}`} onClick={() => removeEntry(e)}>
+                          <Icon icon={Delete02Icon} size={16} />
                         </Button>
                       )}
                     </div>

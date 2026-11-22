@@ -660,9 +660,26 @@ button {
   white-space: nowrap;
 }
 
+/* Parent mode: a red trash tile closes each entry row. The day headers keep the
+   same space on the right, so every amount lines up under its day's total. */
 .entry__remove {
-  color: var(--icon-muted);
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border-radius: var(--radius-md);
+  background: var(--red-50);
+  color: var(--red-600);
   animation: float-in var(--dur-base) var(--ease-out);
+}
+
+.log--admin .log__day {
+  padding-right: 46px; /* trash tile 36 + gap 10 */
+}
+
+@media (hover: hover) {
+  .btn.entry__remove:hover:not(:disabled) {
+    background: #fddcd6;
+  }
 }
 
 .tile {
