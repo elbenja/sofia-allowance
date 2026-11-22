@@ -37,16 +37,23 @@ const pmrem = new THREE.PMREMGenerator(renderer);
 scene.environment = pmrem.fromScene(new RoomEnvironment()).texture;
 scene.environmentIntensity = 0.4;
 
-// VIEW = world units visible top to bottom. The card covers the bottom of the view, so the dog
-// reads as peeking over it; the space above the head is headroom for a jump.
-const CAM_D = 9, VIEW = 3.0, LOOK_Y = 2.25;
-const camera = new THREE.PerspectiveCamera(THREE.MathUtils.radToDeg(2 * Math.atan(VIEW / 2 / CAM_D)), 1, 1, 40);
-camera.position.set(0.5, LOOK_Y + 0.35, CAM_D);
-camera.lookAt(0, LOOK_Y, 0);
+// The bottom edge of the host sits on the card, so the dog reads as peeking over it.
+// The host's CSS sets the framing: --dog-ppu is the dog's size (pixels per world unit) and
+// --dog-raise lifts the dog that many pixels, showing more of its body above the card.
+// Whatever is left above the head is headroom for a jump.
+const CAM_D = 9, BOTTOM_Y = 0.75; // the world height at the bottom edge, before any raise
+const camera = new THREE.PerspectiveCamera(20, 1, 1, 40);
 function fit() {
   const w = host.clientWidth, h = host.clientHeight;
   if (!w || !h) return;
+  const css = getComputedStyle(host);
+  const ppu = parseFloat(css.getPropertyValue('--dog-ppu')) || h / 3;
+  const raise = parseFloat(css.getPropertyValue('--dog-raise')) || 0;
+  const view = h / ppu, lookY = BOTTOM_Y - raise / ppu + view / 2;
+  camera.fov = THREE.MathUtils.radToDeg(2 * Math.atan(view / 2 / CAM_D));
   camera.aspect = w / h;
+  camera.position.set(0.5, lookY + 0.35, CAM_D);
+  camera.lookAt(0, lookY, 0);
   camera.updateProjectionMatrix();
   renderer.setSize(w, h);
 }

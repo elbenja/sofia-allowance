@@ -84,7 +84,7 @@ button {
   align-items: center;
   justify-content: space-between;
   gap: var(--space-6);
-  min-height: 100px; /* room for the puppy that peeks over the first card */
+  min-height: 110px; /* room for the dog that peeks over the first card, and its jumps */
 }
 
 .greeting {
@@ -325,7 +325,8 @@ button {
 
 /* ── Month switcher ── */
 
-.switcher {
+.switcher,
+.parent-actions {
   display: flex;
   align-items: center;
   gap: var(--space-2);
@@ -333,6 +334,10 @@ button {
   background: var(--surface-float);
   border-radius: var(--radius-2xl);
   box-shadow: var(--shadow-float);
+}
+
+.switcher {
+  gap: var(--space-10);
 }
 
 .switcher__label {
@@ -360,11 +365,13 @@ button {
 /* The dog stands behind the card: its box ends at the card's top edge, so the
    card hides the lower body and the dog peeks over it. */
 .dog {
+  --dog-ppu: 50; /* the dog's size: pixels per world unit */
+  --dog-raise: 24; /* how far the dog stands up out of the card, in pixels */
   position: absolute;
   left: 150px;
   bottom: 100%;
   width: 170px;
-  height: 150px;
+  height: 174px;
 }
 
 .dog__stage {
@@ -967,7 +974,7 @@ button {
   }
 
   .header {
-    min-height: 72px;
+    min-height: 96px;
   }
 
   /* Month switcher and Add chores sit in thumb reach at the bottom. */
@@ -995,7 +1002,6 @@ button {
 
   .add {
     padding: 0 var(--space-6);
-    box-shadow: var(--shadow-inverse);
   }
 
   .overview,
@@ -1008,10 +1014,11 @@ button {
   }
 
   .dog {
+    --dog-ppu: 38.67;
     left: auto;
     right: var(--space-4);
     width: 130px;
-    height: 116px;
+    height: 140px;
   }
 
   .dog__poster {

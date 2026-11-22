@@ -168,18 +168,22 @@ export default function App() {
               <Icon icon={ArrowRight01Icon} className="nudge-right" />
             </Button>
           </div>
-          <Button variant="solid" className="add" onClick={() => setSheetOpen(true)}>
-            <Icon icon={unlocked ? Add01Icon : SquareLock02Icon} className="nudge-start" />
-            Add chores
-          </Button>
-          {unlocked && (
-            <Button variant="neutral" square aria-label="Lock parent mode" onClick={() => {
-                lock()
-                setUnlocked(false)
-              }}>
-              <Icon icon={SquareUnlock02Icon} />
+          {/* Parent actions share one floating container: locked, a single "Parents"
+              button; unlocked, "Add chores" plus the button that locks again. */}
+          <div className="parent-actions">
+            <Button variant="solid" className="add" onClick={() => setSheetOpen(true)}>
+              <Icon icon={unlocked ? Add01Icon : SquareLock02Icon} className="nudge-start" />
+              {unlocked ? 'Add chores' : 'Parents'}
             </Button>
-          )}
+            {unlocked && (
+              <Button variant="quiet" square aria-label="Lock parent mode" onClick={() => {
+                  lock()
+                  setUnlocked(false)
+                }}>
+                <Icon icon={SquareUnlock02Icon} />
+              </Button>
+            )}
+          </div>
         </div>
       </header>
 
