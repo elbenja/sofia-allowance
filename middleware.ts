@@ -1,4 +1,4 @@
-import { hasSession } from './server/auth'
+import { hasSession } from './server/auth.js'
 
 // Vercel runs this before every page request except the login page, its function
 // and the built assets (hashed file names, only discoverable from the gated page).

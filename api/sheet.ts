@@ -1,4 +1,4 @@
-import { sheet } from '../server/sheet'
+import { sheet } from '../server/sheet.js'
 
 export const config = { runtime: 'edge' }
 

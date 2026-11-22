@@ -1,7 +1,7 @@
 import { defineConfig, loadEnv, type Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
-import { hasSession, login } from './server/auth'
-import { sheet } from './server/sheet'
+import { hasSession, login } from './server/auth.js'
+import { sheet } from './server/sheet.js'
 
 // In `npm run dev` there is no Vercel, so this plays the middleware and the two
 // functions, reading the secrets from .env.local.

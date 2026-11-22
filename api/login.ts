@@ -1,4 +1,4 @@
-import { login } from '../server/auth'
+import { login } from '../server/auth.js'
 
 export const config = { runtime: 'edge' }
 
