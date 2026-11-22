@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { Add01Icon, Cancel01Icon, Delete02Icon, PencilEdit02Icon, Tick02Icon } from '@hugeicons/core-free-icons'
-import { hasPin, online, setPin, unlock, type Activity } from './store'
+import { unlock, type Activity } from './store'
 import { Button, Icon, IconTile } from './ui'
 
 interface Props {
@@ -172,7 +172,6 @@ export default function ChoresSheet({ open, onClose, unlocked, onUnlock, dayLabe
 }
 
 function PinForm({ onUnlock }: { onUnlock: () => void }) {
-  const creating = !online && !hasPin()
   const [pin, setPinValue] = useState('')
   const [error, setError] = useState('')
   const [shake, setShake] = useState(0)
@@ -180,11 +179,6 @@ function PinForm({ onUnlock }: { onUnlock: () => void }) {
 
   async function submit(e: FormEvent) {
     e.preventDefault()
-    if (creating) {
-      if (!/^\d{4,}$/.test(pin)) return fail('Use at least 4 digits.')
-      await setPin(pin)
-      return onUnlock()
-    }
     setBusy(true)
     const result = await unlock(pin)
     setBusy(false)
@@ -202,7 +196,7 @@ function PinForm({ onUnlock }: { onUnlock: () => void }) {
 
   return (
     <form className="pin" onSubmit={submit}>
-      <label htmlFor="parent-pin">{creating ? 'Choose a parent PIN' : 'Parent PIN'}</label>
+      <label htmlFor="parent-pin">Parent PIN</label>
       <input
         key={shake}
         id="parent-pin"
@@ -221,7 +215,7 @@ function PinForm({ onUnlock }: { onUnlock: () => void }) {
         </span>
       )}
       <Button variant="solid" type="submit" disabled={!pin || busy}>
-        {creating ? 'Save PIN and unlock' : busy ? 'Checking…' : 'Unlock'}
+        {busy ? 'Checking…' : 'Unlock'}
       </Button>
     </form>
   )

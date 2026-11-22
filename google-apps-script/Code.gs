@@ -2,10 +2,13 @@
  * Sofia's Allowance: the only door between the web page and this sheet.
  *
  * Reading is open to anyone who has the web-app link.
- * Writing needs the parent PIN. The PIN is checked here, on Google's side,
- * and is never stored in the web page.
+ * Writing needs a secret key. Only the site's server (/api/sheet on Vercel)
+ * knows it: that server checks the parent PIN first, then calls this script
+ * with the key. The key is never in the web page.
  *
- * Set the PIN once: Project Settings > Script Properties > add PARENT_PIN.
+ * Set the key once: Project Settings > Script Properties > PARENT_PIN,
+ * with the same value as `sheet_key` on Vercel. (The property keeps its old
+ * name so this script needs no new deployment.)
  */
 
 const COLUMNS = {
@@ -13,8 +16,8 @@ const COLUMNS = {
   entries: ['id', 'date', 'name', 'amount', 'icon', 'tint'],
 };
 
-// After this many wrong PINs, every write is refused for ten minutes,
-// so the PIN cannot be found by trying them all.
+// After this many wrong keys, every write is refused for ten minutes,
+// so the key cannot be found by trying them all.
 const MAX_WRONG_PINS = 5;
 const LOCKOUT_SECONDS = 600;
 

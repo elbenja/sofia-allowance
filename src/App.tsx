@@ -3,7 +3,7 @@ import { Add01Icon, ArrowLeft01Icon, ArrowRight01Icon, Delete02Icon, SquareLock0
 import avatarUrl from './assets/avatar.png'
 import ChoresSheet from './ChoresSheet'
 import DogAvatar, { type DogHandle } from './DogAvatar'
-import { fetchData, load, lock, online, save, send, type Activity, type Change, type Data, type Entry } from './store'
+import { fetchData, load, lock, save, send, type Activity, type Change, type Data, type Entry } from './store'
 import { Button, Count, Icon, IconTile } from './ui'
 
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
@@ -40,7 +40,7 @@ export default function App() {
   const [sheetOpen, setSheetOpen] = useState(false)
   const [freshId, setFreshId] = useState<string | null>(null)
   const [toast, setToast] = useState<{ text: string; undo?: Entry } | null>(null)
-  const [loading, setLoading] = useState(online && data.activities.length === 0)
+  const [loading, setLoading] = useState(data.activities.length === 0)
   const logRef = useRef<HTMLDivElement>(null)
   const dogRef = useRef<DogHandle>(null)
 
@@ -51,7 +51,6 @@ export default function App() {
   // device shows up, and an amount changed in the sheet is the one that gets logged.
   const refresh = useRef(() => {})
   useEffect(() => {
-    if (!online) return
     refresh.current = () =>
       fetchData()
         .then((fresh) => fresh && setData(fresh))
@@ -119,7 +118,6 @@ export default function App() {
   // The screen changes first; the sheet follows. If the sheet refuses or the
   // connection drops, say so and show what the sheet really holds.
   function push(change: Change) {
-    if (!online) return
     send(change).catch(() => {
       setToast({ text: 'Could not save. Check the connection.' })
       fetchData()
