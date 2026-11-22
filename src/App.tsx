@@ -1,12 +1,14 @@
 import { useEffect, useRef, useState } from 'react'
 import { Add01Icon, ArrowLeft01Icon, ArrowRight01Icon, Cancel01Icon, SquareLock02Icon, SquareUnlock02Icon } from '@hugeicons/core-free-icons'
 import avatarUrl from './assets/avatar.png'
-import puppyUrl from './assets/puppy.png'
 import ChoresSheet from './ChoresSheet'
+import DogAvatar, { type DogHandle } from './DogAvatar'
 import { fetchData, load, lock, online, save, send, type Activity, type Change, type Data, type Entry } from './store'
 import { Button, Count, Icon, IconTile } from './ui'
 
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+// One colour per month, pink in January through blue in December.
+const MONTH_COLORS = ['#fc1264', '#ea1679', '#d71a8f', '#c51da4', '#b121bb', '#a124ce', '#8e29df', '#7134e1', '#583ee2', '#3c48e3', '#2153e4', '#035fe5']
 const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
 const pad = (n: number) => String(n).padStart(2, '0')
@@ -37,10 +39,10 @@ export default function App() {
   const [unlocked, setUnlocked] = useState(false)
   const [sheetOpen, setSheetOpen] = useState(false)
   const [freshId, setFreshId] = useState<string | null>(null)
-  const [hops, setHops] = useState(0)
   const [toast, setToast] = useState<{ text: string; undo?: Entry } | null>(null)
   const [loading, setLoading] = useState(online && data.activities.length === 0)
   const logRef = useRef<HTMLDivElement>(null)
+  const dogRef = useRef<DogHandle>(null)
 
   useEffect(() => save(data), [data])
 
@@ -119,7 +121,7 @@ export default function App() {
     setData((d) => ({ ...d, entries: [...d.entries, entry] }))
     push({ action: 'addEntry', entry })
     setFreshId(entry.id)
-    setHops((n) => n + 1)
+    dogRef.current?.react('euphoric', 2200) // money in: the dog celebrates
   }
 
   function removeEntry(entry: Entry) {
@@ -131,6 +133,7 @@ export default function App() {
   function undoRemove(entry: Entry) {
     setData((d) => ({ ...d, entries: [...d.entries, entry] }))
     push({ action: 'addEntry', entry })
+    dogRef.current?.react('happy', 1800)
     setToast(null)
   }
 
@@ -182,7 +185,7 @@ export default function App() {
 
       <div className="overview">
         <div className="summary-wrap">
-          <img key={hops} className={`puppy${hops ? ' puppy--hop' : ''}`} src={puppyUrl} alt="" />
+          <DogAvatar ref={dogRef} />
           <section className="card summary" aria-label={`Tips in ${monthName}`}>
             <span className="summary__label">Tips in {monthName}</span>
             <span className="summary__total">
@@ -223,7 +226,7 @@ export default function App() {
                   onClick={() => goMonth(key)}
                 >
                   <span className="bar-cell__amount">{amount > 0 ? shortMoney(amount) : ''}</span>
-                  <span className="bar" style={{ height: amount > 0 ? Math.max(8, Math.round((amount / yearMax) * 82)) : 4 }} />
+                  <span className="bar" style={{ height: amount > 0 ? Math.max(8, Math.round((amount / yearMax) * 82)) : 4, background: MONTH_COLORS[i] }} />
                   <span className="bar-cell__name">
                     <span className="wide">{name.slice(0, 3)}</span>
                     <span className="narrow">{name[0]}</span>

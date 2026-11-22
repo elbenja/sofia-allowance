@@ -12,8 +12,14 @@ export const ACTIVITY_ICONS: Record<IconKey, IconSvgElement> = {
   star: StarIcon,
 }
 
-export function Icon({ icon, size = 18, className }: { icon: IconSvgElement; size?: number; className?: string }) {
-  return <HugeiconsIcon icon={icon} size={size} strokeWidth={1.5} className={className} aria-hidden="true" />
+// Every icon sits in a square box exactly `size` wide and tall, with the glyph centred in it.
+// Layout aligns the box, never the glyph.
+export function Icon({ icon, size = 18, className = '' }: { icon: IconSvgElement; size?: number; className?: string }) {
+  return (
+    <span className={`icon ${className}`} style={{ width: size, height: size }} aria-hidden="true">
+      <HugeiconsIcon icon={icon} size={size} strokeWidth={1.5} />
+    </span>
+  )
 }
 
 export function IconTile({ icon, tint, size = 32 }: { icon: IconKey; tint: string; size?: number }) {

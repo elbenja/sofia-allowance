@@ -161,8 +161,21 @@ button {
 
 /* ── Buttons ── */
 
+.icon {
+  display: inline-grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.icon svg {
+  display: block;
+}
+
 .btn {
   position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   overflow: hidden;
   flex-shrink: 0;
   height: 44px;
@@ -259,7 +272,7 @@ button {
   animation: ripple var(--dur-ripple) var(--ease-out) forwards;
 }
 
-.btn svg {
+.btn .icon {
   transition: transform var(--dur-base) var(--ease-spring-out);
 }
 
@@ -300,12 +313,6 @@ button {
   }
   .bar-cell:hover {
     background: var(--surface-hover);
-  }
-  .bar-cell:hover .bar {
-    opacity: 0.6;
-  }
-  .puppy:hover {
-    transform: translateY(-4px) rotate(-2deg);
   }
   .toast button:hover {
     background: rgba(255, 255, 255, 0.14);
@@ -350,18 +357,40 @@ button {
   gap: var(--space-5);
 }
 
-.puppy {
+/* The dog stands behind the card: its box ends at the card's top edge, so the
+   card hides the lower body and the dog peeks over it. */
+.dog {
   position: absolute;
-  left: 158px;
-  bottom: calc(100% - 37px);
-  width: 129px;
-  height: auto;
-  transform-origin: 50% 100%;
-  transition: transform var(--dur-slow) var(--ease-spring-out);
+  left: 150px;
+  bottom: 100%;
+  width: 170px;
+  height: 150px;
 }
 
-.puppy--hop {
-  animation: hop var(--dur-slower) var(--ease-out);
+.dog__stage {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity var(--dur-slower) var(--ease-out);
+}
+
+.dog__stage--ready {
+  opacity: 1;
+}
+
+.dog__stage canvas {
+  display: block;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.dog__poster {
+  position: absolute;
+  left: 20px;
+  bottom: -37px;
+  width: 129px;
+  pointer-events: none;
 }
 
 .summary__label {
@@ -442,7 +471,6 @@ button {
   align-self: stretch;
   flex-shrink: 0;
   border-radius: var(--radius-xs);
-  background: var(--accent);
   opacity: 0.35;
   transition:
     height var(--dur-slower) var(--ease-out),
@@ -865,15 +893,6 @@ button {
   }
 }
 
-@keyframes hop {
-  40% {
-    transform: translateY(-14px) rotate(-3deg);
-  }
-  70% {
-    transform: translateY(0) rotate(2deg);
-  }
-}
-
 @keyframes shake {
   25% {
     transform: translateX(-5px);
@@ -971,10 +990,16 @@ button {
     padding: var(--space-8);
   }
 
-  .puppy {
+  .dog {
     left: auto;
-    right: var(--space-8);
-    bottom: calc(100% - 26px);
+    right: var(--space-4);
+    width: 130px;
+    height: 116px;
+  }
+
+  .dog__poster {
+    left: 21px;
+    bottom: -26px;
     width: 88px;
   }
 
