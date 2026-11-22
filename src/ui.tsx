@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type ButtonHTMLAttributes, type PointerEvent } from 'react'
 import { HugeiconsIcon, type IconSvgElement } from '@hugeicons/react'
-import { BedIcon, CookingPotIcon, KitchenUtensilsIcon, PawPrintIcon, StarIcon, TShirtIcon, VacuumCleanerIcon } from '@hugeicons/core-free-icons'
+import { BedIcon, CookingPotIcon, DishWasherIcon, KitchenUtensilsIcon, PawPrintIcon, StarIcon, TShirtIcon, VacuumCleanerIcon, WashingMachineIcon } from '@hugeicons/core-free-icons'
 import type { IconKey } from './store'
 
 // Names that can go in the sheet's icon column. Hugeicons' own names work too for the ones
@@ -14,6 +14,8 @@ export const ACTIVITY_ICONS: Record<string, IconSvgElement> = {
   'vacuum-cleaner': VacuumCleanerIcon,
   pot: CookingPotIcon,
   'kitchen-utensils': KitchenUtensilsIcon,
+  'dish-washer': DishWasherIcon,
+  'washing-machine': WashingMachineIcon,
   star: StarIcon,
 }
 
