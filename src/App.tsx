@@ -46,20 +46,32 @@ export default function App() {
 
   useEffect(() => save(data), [data])
 
-  // Read the sheet on opening, and again whenever the page comes back into
-  // view, so a chore added on another device shows up.
+  // Read the sheet on opening, whenever the page comes back into view or its window
+  // gets focus, and when the chores list opens. That way a chore added on another
+  // device shows up, and an amount changed in the sheet is the one that gets logged.
+  const refresh = useRef(() => {})
   useEffect(() => {
     if (!online) return
-    const refresh = () =>
+    refresh.current = () =>
       fetchData()
         .then((fresh) => fresh && setData(fresh))
         .catch(() => setToast({ text: 'Offline. Showing the last saved copy.' }))
         .finally(() => setLoading(false))
-    const onVisible = () => document.visibilityState === 'visible' && refresh()
-    refresh()
+    const onVisible = () => document.visibilityState === 'visible' && refresh.current()
+    const onFocus = () => refresh.current()
+    refresh.current()
     document.addEventListener('visibilitychange', onVisible)
-    return () => document.removeEventListener('visibilitychange', onVisible)
+    window.addEventListener('focus', onFocus)
+    return () => {
+      document.removeEventListener('visibilitychange', onVisible)
+      window.removeEventListener('focus', onFocus)
+    }
   }, [])
+
+  function openSheet() {
+    refresh.current()
+    setSheetOpen(true)
+  }
 
   // The toast leaves by itself.
   useEffect(() => {
@@ -171,7 +183,7 @@ export default function App() {
           {/* Parent actions share one floating container: locked, a single "Parents"
               button; unlocked, "Add chores" plus the button that locks again. */}
           <div className="parent-actions">
-            <Button variant="solid" className="add" onClick={() => setSheetOpen(true)}>
+            <Button variant="solid" className="add" onClick={openSheet}>
               <Icon icon={unlocked ? Add01Icon : SquareLock02Icon} className="nudge-start" />
               {unlocked ? 'Add chores' : 'Parents'}
             </Button>
@@ -286,7 +298,7 @@ export default function App() {
               </span>
             </div>
             {unlocked && (
-              <Button variant="neutral" onClick={() => setSheetOpen(true)}>
+              <Button variant="neutral" onClick={openSheet}>
                 <Icon icon={Add01Icon} className="nudge-start" />
                 Add
               </Button>
