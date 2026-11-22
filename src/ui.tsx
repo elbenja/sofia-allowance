@@ -1,14 +1,19 @@
 import { useEffect, useRef, useState, type ButtonHTMLAttributes, type PointerEvent } from 'react'
 import { HugeiconsIcon, type IconSvgElement } from '@hugeicons/react'
-import { BedIcon, CookingPotIcon, PawPrintIcon, StarIcon, TShirtIcon, VacuumCleanerIcon } from '@hugeicons/core-free-icons'
+import { BedIcon, CookingPotIcon, KitchenUtensilsIcon, PawPrintIcon, StarIcon, TShirtIcon, VacuumCleanerIcon } from '@hugeicons/core-free-icons'
 import type { IconKey } from './store'
 
-export const ACTIVITY_ICONS: Record<IconKey, IconSvgElement> = {
+// Names that can go in the sheet's icon column. Hugeicons' own names work too for the ones
+// listed here (vacuum-cleaner, kitchen-utensils). Hugeicons has no dog, so `dog` is a paw.
+export const ACTIVITY_ICONS: Record<string, IconSvgElement> = {
   bed: BedIcon,
   shirt: TShirtIcon,
   paw: PawPrintIcon,
+  dog: PawPrintIcon,
   vacuum: VacuumCleanerIcon,
+  'vacuum-cleaner': VacuumCleanerIcon,
   pot: CookingPotIcon,
+  'kitchen-utensils': KitchenUtensilsIcon,
   star: StarIcon,
 }
 
@@ -25,7 +30,7 @@ export function Icon({ icon, size = 18, className = '' }: { icon: IconSvgElement
 export function IconTile({ icon, tint, size = 32 }: { icon: IconKey; tint: string; size?: number }) {
   return (
     <span className="tile" style={{ width: size, height: size, background: tint }}>
-      <Icon icon={ACTIVITY_ICONS[icon]} size={size / 2} />
+      <Icon icon={ACTIVITY_ICONS[icon.trim().toLowerCase()] ?? StarIcon} size={size / 2} />
     </span>
   )
 }

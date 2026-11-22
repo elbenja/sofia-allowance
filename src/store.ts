@@ -2,7 +2,8 @@
 // browser only keeps a copy so the page opens instantly. Without it, the page
 // runs on sample data kept in this browser.
 
-export type IconKey = 'bed' | 'shirt' | 'paw' | 'vacuum' | 'pot' | 'star'
+// The sheet's `icon` column. Any text is allowed: names the app doesn't know show a star.
+export type IconKey = string
 
 export interface Activity {
   id: string
