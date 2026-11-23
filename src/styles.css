@@ -84,7 +84,8 @@ button {
   align-items: center;
   justify-content: space-between;
   gap: var(--space-6);
-  min-height: 110px; /* room for the dog that peeks over the first card, and its jumps */
+  min-height: 110px;
+  /* room for the dog that peeks over the first card, and its jumps */
 }
 
 .greeting {
@@ -284,39 +285,51 @@ button {
   .btn--solid:hover:not(:disabled) {
     background: var(--control-solid-hover);
   }
+
   .btn--neutral:hover:not(:disabled) {
     background: var(--control-neutral-hover);
   }
+
   .btn--quiet:hover:not(:disabled) {
     background: var(--surface-hover);
   }
+
   .btn.danger:hover:not(:disabled) {
     background: var(--red-50);
   }
+
   .btn:hover:not(:disabled) .btn__sheen::after {
     animation: sheen var(--dur-sheen) var(--ease-out);
   }
+
   .btn:hover:not(:disabled) .nudge-left {
     transform: translateX(-2px);
   }
+
   .btn:hover:not(:disabled) .nudge-right {
     transform: translateX(2px);
   }
+
   .btn:hover:not(:disabled) .nudge-start {
     transform: translateX(-1px) rotate(-5deg);
   }
+
   .day:hover {
     background: var(--gray-150);
   }
+
   .day--earned:hover {
     background: var(--accent-50);
   }
+
   .day--selected:hover {
     background: var(--gray-950);
   }
+
   .bar-cell:hover {
     background: var(--surface-hover);
   }
+
   .toast button:hover {
     background: rgba(255, 255, 255, 0.14);
   }
@@ -354,14 +367,15 @@ button {
   place-items: center;
 }
 
-.tally .btn__label > * {
+.tally .btn__label>* {
   grid-area: 1 / 1;
 }
 
 .tally__ring {
   width: 100%;
   height: 100%;
-  transform: rotate(-90deg); /* the ring starts at twelve o'clock */
+  transform: rotate(-90deg);
+  /* the ring starts at twelve o'clock */
   fill: none;
   stroke: var(--green-500);
   stroke-width: 2;
@@ -486,8 +500,10 @@ button {
 /* The dog stands behind the card: its box ends at the card's top edge, so the
    card hides the lower body and the dog peeks over it. */
 .dog {
-  --dog-ppu: 50; /* the dog's size: pixels per world unit */
-  --dog-raise: 24; /* how far the dog stands up out of the card, in pixels */
+  --dog-ppu: 50;
+  /* the dog's size: pixels per world unit */
+  --dog-raise: 24;
+  /* how far the dog stands up out of the card, in pixels */
   position: absolute;
   left: 150px;
   bottom: 100%;
@@ -699,7 +715,7 @@ button {
   background: var(--surface-sunken);
 }
 
-.day-summary > div {
+.day-summary>div {
   display: flex;
   flex-direction: column;
   min-width: 0;
@@ -711,7 +727,7 @@ button {
 }
 
 .day-summary span span,
-.day-summary > div > span {
+.day-summary>div>span {
   font-size: var(--text-sm);
   color: var(--gray-700);
   animation: float-in var(--dur-base) var(--ease-out);
@@ -756,7 +772,7 @@ button {
   color: var(--text-primary);
 }
 
-.log__day--selected > span:first-child::before {
+.log__day--selected>span:first-child::before {
   content: '';
   display: inline-block;
   width: 6px;
@@ -801,7 +817,8 @@ button {
 }
 
 .log--admin .log__day {
-  padding-right: 46px; /* trash tile 36 + gap 10 */
+  padding-right: 46px;
+  /* trash tile 36 + gap 10 */
 }
 
 @media (hover: hover) {
@@ -860,7 +877,7 @@ button {
   align-items: flex-start;
 }
 
-.sheet__head > div:first-child {
+.sheet__head>div:first-child {
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -1054,9 +1071,11 @@ button {
   25% {
     transform: translateX(-5px);
   }
+
   50% {
     transform: translateX(4px);
   }
+
   75% {
     transform: translateX(-2px);
   }
@@ -1067,6 +1086,7 @@ button {
     transform: translate(-50%, -50%) scale(0);
     opacity: 0.16;
   }
+
   to {
     transform: translate(-50%, -50%) scale(1);
     opacity: 0;
@@ -1077,6 +1097,7 @@ button {
   from {
     transform: translateX(-180%) skewX(-16deg);
   }
+
   to {
     transform: translateX(320%) skewX(-16deg);
   }
@@ -1091,6 +1112,7 @@ button {
 /* ── Tablet: one column ── */
 
 @media (max-width: 900px) {
+
   .overview,
   .details {
     grid-template-columns: minmax(0, 1fr);
@@ -1163,7 +1185,7 @@ button {
   .dog {
     --dog-ppu: 38.67;
     left: auto;
-    right: var(--space-11);
+    right: var(--space-9);
     width: 130px;
     height: 140px;
   }
@@ -1239,6 +1261,7 @@ button {
 }
 
 @media (prefers-reduced-motion: reduce) {
+
   *,
   *::before,
   *::after {
