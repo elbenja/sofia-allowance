@@ -34,7 +34,15 @@ function passwordGate(env: Record<string, string>): Plugin {
   }
 }
 
+// Link previews need the share image's full address. Vercel's build knows the site's
+// production domain, so the code holds none; elsewhere the link stays relative.
+const SITE_URL = process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : ''
+const siteUrl: Plugin = {
+  name: 'site-url',
+  transformIndexHtml: { order: 'pre', handler: (html) => html.replaceAll('%SITE_URL%', SITE_URL) },
+}
+
 export default defineConfig(({ mode }) => ({
-  plugins: [react(), passwordGate(loadEnv(mode, process.cwd(), ''))],
+  plugins: [react(), siteUrl, passwordGate(loadEnv(mode, process.cwd(), ''))],
   build: { rollupOptions: { input: { main: 'index.html', login: 'login.html' } } },
 }))
