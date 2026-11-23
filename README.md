@@ -72,14 +72,15 @@ The four secrets are server-only and never reach the browser. Keep their names l
 | `sheet_url`  | The Apps Script web-app URL from step 2.                                 |
 | `sheet_key`  | The random secret from step 2, the same value as the `PARENT_PIN` property. |
 
-Two optional settings personalise the page. They're shown to anyone who opens the site, so they aren't secrets. The `VITE_` prefix is what sends them to the browser.
+Three optional settings personalise the page. They're shown to anyone who opens the site, so they aren't secrets. The `VITE_` prefix is what sends them to the browser.
 
 | Variable          | What it is                                                                                               |
 | ----------------- | -------------------------------------------------------------------------------------------------------- |
 | `VITE_KID_NAME`   | Who the app is for. It's used in the greeting and the page title. Without it, the page says "Hi there" and "Allowance". |
-| `VITE_AVATAR_URL` | A link to a square picture, used for the avatar and the browser-tab icon. Without it, the avatar shows the name's first letter. |
+| `VITE_AVATAR_URL` | A link to a square picture for the avatar. Without it, the avatar shows the name's first letter. |
+| `VITE_FAVICON_URL` | A link to a square picture for the browser-tab icon. Without it, the tab uses the avatar, or a paw if there's no avatar either. |
 
-Keeping the name and picture in settings means none of your family's details end up in the code. To host the picture, a public [Vercel Blob](https://vercel.com/docs/vercel-blob) store works: in your Vercel project, open **Storage**, create a Blob store, upload the image, and copy its URL.
+Keeping the name and pictures in settings means none of your family's details end up in the code. To host the pictures, a public [Vercel Blob](https://vercel.com/docs/vercel-blob) store works: in your Vercel project, open **Storage**, create a Blob store, upload the images, and copy their URLs.
 
 ### 4. Run it locally
 
@@ -107,8 +108,8 @@ Open http://localhost:5173 and log in with your `password`. In development, the 
 
 ## Make it yours
 
-- **Name and picture:** set `VITE_KID_NAME` and `VITE_AVATAR_URL` (see above). They're read in `src/kid.ts`.
-- **Default tab icon:** `public/favicon.svg`, used when there's no picture.
+- **Name and pictures:** set `VITE_KID_NAME`, `VITE_AVATAR_URL` and `VITE_FAVICON_URL` (see above). They're read in `src/kid.ts`.
+- **Default tab icon:** `public/favicon.svg`, used when neither picture is set.
 - **More chore icons:** add entries to `ACTIVITY_ICONS` in `src/ui.tsx`, using any icon from `@hugeicons/core-free-icons`.
 
 ## Project layout
