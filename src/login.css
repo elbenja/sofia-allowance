@@ -10,14 +10,25 @@
 .login__wrap {
   position: relative;
   width: min(100%, 360px);
-  margin-top: 150px; /* room for Leo above the card */
+  margin-top: 195px; /* room for Leo above the card */
   animation: login-in var(--dur-slower) var(--ease-out) both;
 }
 
+/* Leo at 130% of the dashboard size: box, framing and poster all scaled by 1.3. */
 .login .dog {
+  --dog-ppu: 65;
+  --dog-raise: 31.2;
   left: 50%;
   right: auto;
+  width: 221px;
+  height: 226px;
   transform: translateX(-50%);
+}
+
+.login .dog__poster {
+  left: 26px;
+  bottom: -48px;
+  width: 168px;
 }
 
 .login__card {
