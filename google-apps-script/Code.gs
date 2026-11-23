@@ -1,5 +1,5 @@
 /**
- * Sofia's Allowance: the only door between the web page and this sheet.
+ * Allowance: the only door between the web page and this sheet.
  *
  * Reading is open to anyone who has the web-app link.
  * Writing needs a secret key. Only the site's server (/api/sheet on Vercel)

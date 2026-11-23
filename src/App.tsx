@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { Add01Icon, ArrowLeft01Icon, ArrowRight01Icon, Delete02Icon, SquareLock02Icon, SquareUnlock02Icon } from '@hugeicons/core-free-icons'
-import avatarUrl from './assets/avatar.png'
 import ChoresSheet from './ChoresSheet'
 import DogAvatar, { type DogHandle } from './DogAvatar'
+import { AVATAR_URL, KID_NAME } from './kid'
 import { fetchData, load, lock, save, send, type Activity, type Change, type Data, type Entry } from './store'
 import { Button, Count, Icon, IconTile } from './ui'
 
@@ -166,11 +166,12 @@ export default function App() {
     <div className="app">
       <header className="header">
         <div className="greeting">
-          <span className="avatar">
-            <img src={avatarUrl} alt="" width={34} height={34} />
+          {/* Without a picture, the circle shows the name's first letter. */}
+          <span className="avatar" aria-hidden="true">
+            {AVATAR_URL ? <img src={AVATAR_URL} alt="" width={34} height={34} /> : KID_NAME.charAt(0)}
           </span>
           <div>
-            <h1>Hi, Sofia</h1>
+            <h1>{KID_NAME ? `Hi, ${KID_NAME}` : 'Hi there'}</h1>
             <p>Chores and tips</p>
           </div>
         </div>

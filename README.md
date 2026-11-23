@@ -6,7 +6,7 @@ The kid opens it to see how much they've earned this month, how the year is goin
 
 Everything is stored in a Google Sheet, so you can also read and edit the data by hand.
 
-It was built for one family, so it has hard-coded names and some rough edges. It's shared as-is.
+It was built for one family, so expect some rough edges. It's shared as-is.
 
 ## How it works
 
@@ -63,7 +63,7 @@ If you change `Code.gs` later, publish it with **Deploy → Manage deployments �
 
 ### 3. Environment variables
 
-These are all server-only and never reach the browser. Keep the names lowercase and don't add a `VITE_` prefix.
+The four secrets are server-only and never reach the browser. Keep their names lowercase and don't add a `VITE_` prefix.
 
 | Variable     | What it is                                                               |
 | ------------ | ------------------------------------------------------------------------ |
@@ -71,6 +71,15 @@ These are all server-only and never reach the browser. Keep the names lowercase 
 | `parent_pin` | The PIN that unlocks parent mode (adding and removing chores).           |
 | `sheet_url`  | The Apps Script web-app URL from step 2.                                 |
 | `sheet_key`  | The random secret from step 2, the same value as the `PARENT_PIN` property. |
+
+Two optional settings personalise the page. They're shown to anyone who opens the site, so they aren't secrets. The `VITE_` prefix is what sends them to the browser.
+
+| Variable          | What it is                                                                                               |
+| ----------------- | -------------------------------------------------------------------------------------------------------- |
+| `VITE_KID_NAME`   | Who the app is for. It's used in the greeting and the page title. Without it, the page says "Hi there" and "Allowance". |
+| `VITE_AVATAR_URL` | A link to a square picture, used for the avatar and the browser-tab icon. Without it, the avatar shows the name's first letter. |
+
+Keeping the name and picture in settings means none of your family's details end up in the code. To host the picture, a public [Vercel Blob](https://vercel.com/docs/vercel-blob) store works: in your Vercel project, open **Storage**, create a Blob store, upload the image, and copy its URL.
 
 ### 4. Run it locally
 
@@ -82,7 +91,7 @@ npm install
 cp .env.example .env.local
 ```
 
-Fill in the four values in `.env.local`, then start the dev server:
+Fill in the values in `.env.local`, then start the dev server:
 
 ```bash
 npm run dev
@@ -93,19 +102,19 @@ Open http://localhost:5173 and log in with your `password`. In development, the 
 ### 5. Deploy to Vercel
 
 1. Import the repository in Vercel. It detects Vite on its own: the build command is `npm run build` and the output folder is `dist`.
-2. Under **Settings → Environment Variables**, add the same four variables.
-3. Deploy. If you change a variable later, redeploy so the change takes effect.
+2. Under **Settings → Environment Variables**, add the same variables.
+3. Deploy. If you change a variable later, redeploy so the change takes effect. The `VITE_` settings are baked in when the site is built.
 
 ## Make it yours
 
-- **Name:** the greeting in `src/App.tsx`, the heading in `src/login.tsx`, and the `<title>` in `index.html` and `login.html`.
-- **Avatar and favicon:** `src/assets/avatar.png` and `public/favicon.png`.
+- **Name and picture:** set `VITE_KID_NAME` and `VITE_AVATAR_URL` (see above). They're read in `src/kid.ts`.
+- **Default tab icon:** `public/favicon.svg`, used when there's no picture.
 - **More chore icons:** add entries to `ACTIVITY_ICONS` in `src/ui.tsx`, using any icon from `@hugeicons/core-free-icons`.
 
 ## Project layout
 
 ```
-src/                 the app: App.tsx (dashboard), ChoresSheet.tsx (parent mode), DogAvatar.tsx + dog.js (3D dog), login.tsx
+src/                 the app: App.tsx (dashboard), ChoresSheet.tsx (parent mode), DogAvatar.tsx + dog.js (3D dog), login.tsx, kid.ts (name and picture)
 server/              shared server code: auth.ts (password gate), sheet.ts (sheet proxy)
 api/                 Vercel edge functions that wrap server/
 middleware.ts        Vercel middleware that sends signed-out visitors to /login

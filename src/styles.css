@@ -111,6 +111,9 @@ button {
   background: var(--avatar);
   display: grid;
   place-items: center;
+  color: #fff;
+  font-size: var(--text-xl);
+  font-weight: var(--weight-semibold);
 }
 
 .avatar img {

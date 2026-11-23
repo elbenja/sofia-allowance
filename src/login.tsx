@@ -4,6 +4,7 @@ import './tokens.css'
 import './styles.css'
 import './login.css'
 import DogAvatar, { type DogHandle } from './DogAvatar'
+import { TITLE } from './kid'
 import { Button } from './ui'
 
 function Login() {
@@ -36,7 +37,7 @@ function Login() {
         <DogAvatar ref={dog} />
         <form className="card login__card" onSubmit={submit}>
           <div className="login__head">
-            <h1>Sofia's Allowance</h1>
+            <h1>{TITLE}</h1>
             <span className="hint">Enter the family password to continue.</span>
           </div>
           <input
