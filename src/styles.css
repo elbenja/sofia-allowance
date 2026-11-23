@@ -1183,17 +1183,18 @@ button {
   }
 
   .dog {
-    --dog-ppu: 38.67;
+    --dog-ppu: 42.54;
+    --dog-raise: 26.4;
     left: auto;
     right: var(--space-9);
-    width: 130px;
-    height: 140px;
+    width: 143px;
+    height: 154px;
   }
 
   .dog__poster {
-    left: 21px;
-    bottom: -26px;
-    width: 88px;
+    left: 23px;
+    bottom: -29px;
+    width: 97px;
   }
 
   .bars {
