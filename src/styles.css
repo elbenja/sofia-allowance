@@ -1226,6 +1226,11 @@ button {
     border-radius: var(--radius-lg);
   }
 
+  /* The bottom bar's Add chores and the log already cover what this shows. */
+  .day-summary {
+    display: none;
+  }
+
   .log__scroll {
     max-height: none;
     overflow: visible;
