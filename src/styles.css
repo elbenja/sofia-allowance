@@ -319,8 +319,116 @@ button {
   }
 }
 
-.pop {
-  animation: pop var(--dur-slow) var(--ease-spring-out);
+/* ── Tally button (TallyButton in ui.tsx) ──
+   idle: the plus · saving: circle with the count so far, a green ring closing around it ·
+   done: mint with a tick · count: the new count · then back to the plus. */
+
+.tally {
+  transition:
+    background-color var(--dur-slow) var(--ease-out),
+    color var(--dur-slow) var(--ease-out),
+    border-radius var(--dur-slow) var(--ease-out),
+    transform var(--dur-slow) var(--ease-spring-out);
+}
+
+/* These come after the hover block so they win over the solid button's hover tint. */
+.btn.tally:not([data-phase='idle']) {
+  border-radius: var(--radius-full);
+  background: var(--control-neutral);
+  color: var(--text-primary);
+}
+
+.btn.tally[data-phase='done'] {
+  background: var(--green-50);
+  color: var(--green-600);
+  animation: tally-bump var(--dur-slower) var(--ease-spring-out);
+}
+
+.tally .btn__label {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+}
+
+.tally .btn__label > * {
+  grid-area: 1 / 1;
+}
+
+.tally__ring {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg); /* the ring starts at twelve o'clock */
+  fill: none;
+  stroke: var(--green-500);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  opacity: 0;
+  transition: opacity var(--dur-base) var(--ease-out);
+}
+
+.tally[data-phase='saving'] .tally__ring,
+.tally[data-phase='done'] .tally__ring {
+  opacity: 1;
+}
+
+.tally[data-phase='saving'] .tally__ring circle {
+  animation: tally-ring 400ms var(--ease-in-out) forwards;
+}
+
+.tally[data-phase='done'] .tally__ring,
+.tally[data-phase='count'] .tally__ring {
+  stroke-dashoffset: 0;
+}
+
+.tally .tally__plus,
+.tally .tally__check,
+.tally .tally__num {
+  transition:
+    opacity var(--dur-base) var(--ease-out),
+    transform var(--dur-slow) var(--ease-spring-out);
+}
+
+.tally:not([data-phase='idle']) .tally__plus {
+  opacity: 0;
+  transform: rotate(90deg) scale(0.4);
+}
+
+/* Numbers roll like an odometer: in from below, out through the top. */
+.tally .tally__num {
+  font-size: var(--text-lg);
+  font-weight: var(--weight-semibold);
+  font-variant-numeric: tabular-nums;
+  opacity: 0;
+  transform: translateY(0.8em);
+}
+
+.tally[data-phase='saving'] .tally__num--from,
+.tally[data-phase='count'] .tally__num--to {
+  opacity: 1;
+  transform: none;
+}
+
+.tally[data-phase='done'] .tally__num--from,
+.tally[data-phase='count'] .tally__num--from,
+.tally[data-phase='count'] .tally__check {
+  transform: translateY(-0.8em);
+}
+
+.tally[data-phase='idle'] .tally__num--to {
+  transform: scale(0.6);
+}
+
+.tally .tally__check {
+  opacity: 0;
+  transform: scale(0.4);
+}
+
+.tally[data-phase='done'] .tally__check {
+  opacity: 1;
+  transform: none;
 }
 
 /* ── Month switcher ── */
@@ -914,6 +1022,18 @@ button {
 @keyframes pop {
   38% {
     transform: scale(0.86);
+  }
+}
+
+@keyframes tally-ring {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes tally-bump {
+  40% {
+    transform: scale(1.08);
   }
 }
 

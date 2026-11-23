@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react'
-import { Add01Icon, Cancel01Icon, Delete02Icon, PencilEdit02Icon, Tick02Icon } from '@hugeicons/core-free-icons'
-import { unlock, type Activity } from './store'
-import { Button, Icon, IconTile } from './ui'
+import { Cancel01Icon, Delete02Icon, PencilEdit02Icon } from '@hugeicons/core-free-icons'
+import { unlock, type Activity, type Entry } from './store'
+import { Button, Icon, IconTile, TallyButton } from './ui'
 
 interface Props {
   open: boolean
@@ -9,6 +9,7 @@ interface Props {
   unlocked: boolean
   onUnlock: () => void
   dayLabel: string
+  dayEntries: Entry[] // what is already logged on that day
   activities: Activity[]
   onLog: (a: Pick<Activity, 'name' | 'amount' | 'icon' | 'tint'>) => void
   onChange: (activities: Activity[]) => void
@@ -19,10 +20,9 @@ const parseAmount = (raw: string) => {
   return Number.isFinite(n) && n > 0 ? Math.round(n * 100) / 100 : null
 }
 
-export default function ChoresSheet({ open, onClose, unlocked, onUnlock, dayLabel, activities, onLog, onChange }: Props) {
+export default function ChoresSheet({ open, onClose, unlocked, onUnlock, dayLabel, dayEntries, activities, onLog, onChange }: Props) {
   const ref = useRef<HTMLDialogElement>(null)
   const [editing, setEditing] = useState(false)
-  const [loggedId, setLoggedId] = useState<string | null>(null)
   const [newName, setNewName] = useState('')
   const [newAmount, setNewAmount] = useState('')
 
@@ -34,13 +34,6 @@ export default function ChoresSheet({ open, onClose, unlocked, onUnlock, dayLabe
     }
     if (!open && dialog.open) dialog.close()
   }, [open])
-
-  // The plus turns into a tick for a moment, so a tap visibly lands.
-  useEffect(() => {
-    if (!loggedId) return
-    const t = window.setTimeout(() => setLoggedId(null), 900)
-    return () => window.clearTimeout(t)
-  }, [loggedId])
 
   const update = (id: string, patch: Partial<Activity>) => onChange(activities.map((a) => (a.id === id ? { ...a, ...patch } : a)))
 
@@ -120,17 +113,11 @@ export default function ChoresSheet({ open, onClose, unlocked, onUnlock, dayLabe
                     <>
                       <span className="activity__name">{a.name}</span>
                       <span className="mono">${a.amount}</span>
-                      <Button
-                        variant="solid"
-                        square
-                        aria-label={`Log ${a.name} on ${dayLabel}`}
-                        onClick={() => {
-                          onLog(a)
-                          setLoggedId(a.id)
-                        }}
-                      >
-                        <Icon key={String(loggedId === a.id)} icon={loggedId === a.id ? Tick02Icon : Add01Icon} className="pop" />
-                      </Button>
+                      <TallyButton
+                        label={`Log ${a.name} on ${dayLabel}`}
+                        count={dayEntries.filter((e) => e.name === a.name).length}
+                        onAdd={() => onLog(a)}
+                      />
                     </>
                   )}
                 </div>

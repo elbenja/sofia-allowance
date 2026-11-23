@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type ButtonHTMLAttributes, type PointerEvent } from 'react'
 import { HugeiconsIcon, type IconSvgElement } from '@hugeicons/react'
-import { BedIcon, CookingPotIcon, DishWasherIcon, KitchenUtensilsIcon, PawPrintIcon, StarIcon, TShirtIcon, VacuumCleanerIcon, WashingMachineIcon } from '@hugeicons/core-free-icons'
+import { Add01Icon, BedIcon, CookingPotIcon, DishWasherIcon, KitchenUtensilsIcon, PawPrintIcon, StarIcon, Tick02Icon, TShirtIcon, VacuumCleanerIcon, WashingMachineIcon } from '@hugeicons/core-free-icons'
 import type { IconKey } from './store'
 
 // Names that can go in the sheet's icon column. Hugeicons' own names work too for the ones
@@ -66,6 +66,51 @@ export function Button({ variant = 'neutral', square, className = '', children, 
         </span>
       )}
     </button>
+  )
+}
+
+type TallyPhase = 'idle' | 'saving' | 'done' | 'count'
+
+// When each phase starts after a tap, in ms. The ring closes during `saving` (see .tally in styles.css).
+const TALLY_TIMELINE: [TallyPhase, number][] = [
+  ['done', 400],
+  ['count', 850],
+  ['idle', 1450],
+]
+
+// A plus that counts. A tap turns it into a circle showing the count so far while a green ring
+// closes around it, a tick lands, the count rolls up by one, and the plus comes back.
+// Tapping again part-way adds again and starts over from the new count.
+export function TallyButton({ count, onAdd, label }: { count: number; onAdd: () => void; label: string }) {
+  const [phase, setPhase] = useState<TallyPhase>('idle')
+  const [from, setFrom] = useState(count)
+  const [run, setRun] = useState(0)
+  const timers = useRef<number[]>([])
+  useEffect(() => () => timers.current.forEach(window.clearTimeout), [])
+
+  const tap = () => {
+    timers.current.forEach(window.clearTimeout)
+    setFrom(count)
+    setRun((n) => n + 1)
+    setPhase('saving')
+    timers.current = TALLY_TIMELINE.map(([next, at]) => window.setTimeout(() => setPhase(next), at))
+    onAdd()
+  }
+
+  return (
+    <Button variant="solid" square className="tally" data-phase={phase} aria-label={label} onClick={tap}>
+      <svg key={run} className="tally__ring" viewBox="0 0 44 44" aria-hidden="true">
+        <circle cx="22" cy="22" r="21" pathLength={1} />
+      </svg>
+      <Icon icon={Add01Icon} className="tally__plus" />
+      <span className="tally__num tally__num--from" aria-hidden="true">
+        {from}
+      </span>
+      <Icon icon={Tick02Icon} className="tally__check" />
+      <span className="tally__num tally__num--to" aria-hidden="true">
+        {from + 1}
+      </span>
+    </Button>
   )
 }
 

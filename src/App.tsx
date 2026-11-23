@@ -346,6 +346,7 @@ export default function App() {
         unlocked={unlocked}
         onUnlock={() => setUnlocked(true)}
         dayLabel={dayLabel(day)}
+        dayEntries={selectedEntries}
         activities={data.activities}
         onLog={logEntry}
         onChange={setActivities}
