@@ -658,7 +658,7 @@ button {
 .day {
   height: 52px;
   padding: 0;
-  border-radius: var(--radius-xl);
+  border-radius: 22px; /* the phone's 20px at 48px tall, scaled to 52px */
   background: var(--surface-sunken);
   display: flex;
   flex-direction: column;
@@ -1224,7 +1224,7 @@ button {
 
   .day {
     height: 48px;
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius-3xl);
   }
 
   /* The bottom bar's Add chores and the log already cover what this shows. */
