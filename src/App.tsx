@@ -152,6 +152,16 @@ export default function App() {
     push({ action: 'setActivities', activities })
   }
 
+  // Locks parent mode again. Desktop shows it beside Add chores; a phone shows it at the top.
+  const lockButton = unlocked && (
+    <Button variant="quiet" square aria-label="Lock parent mode" onClick={() => {
+        lock()
+        setUnlocked(false)
+      }}>
+      <Icon icon={SquareUnlock02Icon} />
+    </Button>
+  )
+
   return (
     <div className="app">
       <header className="header">
@@ -185,16 +195,10 @@ export default function App() {
               <Icon icon={unlocked ? Add01Icon : SquareLock02Icon} className="nudge-start" />
               {unlocked ? 'Add chores' : 'Parents'}
             </Button>
-            {unlocked && (
-              <Button variant="quiet" square aria-label="Lock parent mode" onClick={() => {
-                  lock()
-                  setUnlocked(false)
-                }}>
-                <Icon icon={SquareUnlock02Icon} />
-              </Button>
-            )}
+            {lockButton && <span className="lock-beside">{lockButton}</span>}
           </div>
         </div>
+        {lockButton && <div className="lock-top">{lockButton}</div>}
       </header>
 
       <div className="overview">

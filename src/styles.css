@@ -434,7 +434,8 @@ button {
 /* ── Month switcher ── */
 
 .switcher,
-.parent-actions {
+.parent-actions,
+.lock-top {
   display: flex;
   align-items: center;
   gap: var(--space-2);
@@ -446,6 +447,15 @@ button {
 
 .switcher {
   gap: var(--space-10);
+}
+
+.lock-beside {
+  display: contents;
+}
+
+/* The phone's copy of the lock button; desktop keeps it beside Add chores. */
+.lock-top {
+  display: none;
 }
 
 .switcher__label {
@@ -1094,7 +1104,21 @@ button {
   }
 
   .header {
+    position: relative;
     min-height: 96px;
+  }
+
+  /* The lock button leaves the bottom bar and floats at the top right, over the dog. */
+  .lock-beside {
+    display: none;
+  }
+
+  .lock-top {
+    display: flex;
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 2;
   }
 
   /* Month switcher and Add chores sit in thumb reach at the bottom. */
