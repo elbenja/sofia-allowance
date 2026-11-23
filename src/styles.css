@@ -1163,7 +1163,7 @@ button {
   .dog {
     --dog-ppu: 38.67;
     left: auto;
-    right: var(--space-4);
+    right: var(--space-11);
     width: 130px;
     height: 140px;
   }
