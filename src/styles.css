@@ -475,6 +475,25 @@ button {
   display: none;
 }
 
+/* Logging out: the lock rounds into a circle as its icon fades, shrinks to a dot, and is gone.
+   On a phone the floating tile goes; on desktop the button fills in so the shape shows, then closes its gap. */
+.lock--leaving {
+  pointer-events: none;
+}
+
+.lock-top.lock--leaving {
+  animation: lock-leave 700ms forwards;
+}
+
+.lock-beside.lock--leaving .btn {
+  background: var(--control-neutral);
+  animation: lock-leave 700ms forwards, lock-collapse 700ms forwards;
+}
+
+.lock--leaving .icon {
+  animation: lock-leave-icon 700ms forwards;
+}
+
 .switcher__label {
   min-width: 132px;
   text-align: center;
@@ -949,7 +968,13 @@ button {
   animation: shake var(--dur-slow) var(--ease-out);
 }
 
-.custom {
+/* The small modal's X sits alone at the top right. */
+.sheet__close {
+  align-self: flex-end;
+}
+
+.custom,
+.sheet__foot {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -959,11 +984,13 @@ button {
   background: var(--surface-sunken);
 }
 
+/* The name and the amount share the first row at any width; the buttons always wrap below. */
 .custom__name {
-  flex: 1 1 240px;
+  flex: 1 1 60%;
 }
 
-.custom .btn {
+.custom .btn,
+.sheet__foot .btn {
   flex: 1 1 40%;
 }
 
@@ -1106,6 +1133,51 @@ button {
 @keyframes sheet-up {
   from {
     transform: translateY(100%);
+  }
+}
+
+/* Starts from the element's own corners. */
+@keyframes lock-leave {
+  35% {
+    border-radius: 50%;
+    transform: scale(1);
+    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  80% {
+    border-radius: 50%;
+    transform: scale(0.24);
+    opacity: 1;
+    animation-timing-function: cubic-bezier(0.4, 0, 1, 1);
+  }
+
+  100% {
+    border-radius: 50%;
+    transform: scale(0);
+    opacity: 0;
+  }
+}
+
+@keyframes lock-leave-icon {
+  35% {
+    opacity: 1;
+  }
+
+  60%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes lock-collapse {
+  80% {
+    width: 44px;
+    margin-left: 0;
+  }
+
+  100% {
+    width: 0;
+    margin-left: calc(-1 * var(--space-2));
   }
 }
 

@@ -1,4 +1,4 @@
-export type DogReaction = 'jump' | 'happy' | 'euphoric' | 'surprised' | 'curious' | 'sleepy' | 'sad' | 'embarrassed' | 'angry'
+export type DogReaction = 'jump' | 'happy' | 'euphoric' | 'surprised' | 'curious' | 'sleepy' | 'sad' | 'embarrassed' | 'angry' | 'wave'
 
 export function mountDog(
   host: HTMLElement,

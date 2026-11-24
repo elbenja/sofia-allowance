@@ -621,7 +621,7 @@ const NEUTRAL = {
   pace: 1,                                                                 // how briskly the dog walks
 };
 const BEADS = ['bead', 'bead'], WINK = ['arc', 'bead'];                    // the eye on the viewer's left, then the other
-const SHAPES = { happy: ['arc', 'arc'] };
+const SHAPES = { happy: ['arc', 'arc'], wave: ['arc', 'arc'] };
 const POSES = {
   happy:       { mW: 0.15, mC: 0.05, mO: 0.02, ear: 0.12, wag: 4.5, tailLift: 0.3, headPitch: -0.05, headTilt: 0.05, hx: -1.12, hy: 1.4, hz: 0.1 },
   euphoric:    { mW: 0.15, mC: 0.05, mO: 0.085, eye: 1.1, ear: 0.3, wag: 6, tailLift: 0.45, pitch: -0.04, headPitch: -0.1, hx: -1.05, hy: 1.6, hz: 0.05, lx: 1.05, ly: 1.6, lz: 0.05, pace: 1.35 },
@@ -631,6 +631,7 @@ const POSES = {
   sad:         { mW: 0.11, mC: -0.045, lid: 0.5, eyeTilt: -0.6, ear: -0.06, earBack: 0.1, wag: 0.2, tailLift: -0.7, pitch: 0.08, squash: 0.04, headPitch: 0.22, pace: 0.6 },
   embarrassed: { mW: 0.07, mC: 0.02, mS: 0.012, lid: 0.4, eyeTilt: -0.3, blush: 1, wag: 0.6, tailLift: -0.3, turn: 0.12, squash: 0.02, headTurn: 0.24, headPitch: 0.12, headTilt: 0.08, hx: -0.58, hy: 1.28, hz: 0.5, lx: 0.58, ly: 1.28, lz: 0.5 },
   angry:       { mW: 0.14, mC: -0.05, mT: 0.014, mO: 0.014, lid: 0.55, eyeTilt: 0.65, earBack: 0.5, ear: 0.08, wag: 0, tailLift: 0.5, pitch: 0.08, crouch: 0.02, headPitch: 0.04, hx: -0.98, hy: 0.74, hz: 0.16, lx: 0.98, ly: 0.74, lz: 0.16, pace: 1.3 },
+  wave:        { mW: 0.15, mC: 0.05, mO: 0.03, ear: 0.15, wag: 4, tailLift: 0.3, headPitch: -0.04, headTilt: -0.12, hx: -1.28, hy: 1.6, hz: 0.34 }, // goodbye: the right paw up and out, clear of the ear
 };
 // ignored for a while: a look, a tapping foot
 const IMPATIENT = { headTilt: 0.1, headTurn: -0.08, lid: 0.3, eyeTilt: 0.25, mC: -0.02, wag: 0.4, earCock: -0.1 };
@@ -646,6 +647,7 @@ const MOTIONS = {
   sad:         (t, a) => { const sniff = Math.max(0, Math.sin(t * 1.6)) ** 12; a.squash = 0.014 * Math.sin(t * 0.9); a.headTurn = 0.05 * Math.sin(t * 0.7); a.headPitch = -0.05 * sniff; },
   embarrassed: (t, a) => { a.lean = 0.05 * Math.sin(t * 2); a.turn = 0.06 * Math.sin(t * 2); a.headTurn = 0.05 * Math.sin(t * 2 + 0.5); a.hx = 0.02 * Math.sin(t * 5); a.lx = -0.02 * Math.sin(t * 5); a.hy = 0.02 * Math.sin(t * 10); a.ly = 0.02 * Math.cos(t * 10); },
   angry:       (t, a) => { const bang = Math.sin(t * 6.5); a.lean = 0.014 * Math.sin(t * 42); a.turn = 0.012 * Math.sin(t * 37); a.hy = 0.03 * Math.sin(t * 13); a.ly = 0.03 * Math.sin(t * 13 + 1); a.footR = Math.max(0, -bang) * 0.3; },
+  wave:        (t, a) => { const s = Math.sin(t * 9); a.hx = 0.18 * s; a.hy = 0.06 * s; a.lean = 0.025 * s; a.headTilt = 0.04 * Math.sin(t * 4.5); },
 };
 // ---------- interaction ----------
 const clock = new THREE.Clock();

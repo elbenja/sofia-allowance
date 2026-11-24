@@ -10,6 +10,7 @@ const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 
 // One colour per month, pink in January through blue in December.
 const MONTH_COLORS = ['#fc1264', '#ea1679', '#d71a8f', '#c51da4', '#b121bb', '#a124ce', '#8e29df', '#7134e1', '#583ee2', '#3c48e3', '#2153e4', '#035fe5']
 const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+const LOCK_LEAVE_MS = 700 // matches the lock-leave animation in styles.css
 
 const pad = (n: number) => String(n).padStart(2, '0')
 const money = (n: number) => '$' + n.toFixed(2)
@@ -37,6 +38,7 @@ export default function App() {
   const [month, setMonth] = useState(today.slice(0, 7))
   const [day, setDay] = useState(today)
   const [unlocked, setUnlocked] = useState(false)
+  const [leaving, setLeaving] = useState(false) // the lock button's exit after logging out
   const [sheetOpen, setSheetOpen] = useState(false)
   const [freshId, setFreshId] = useState<string | null>(null)
   const [toast, setToast] = useState<{ text: string; undo?: Entry } | null>(null)
@@ -152,15 +154,22 @@ export default function App() {
     push({ action: 'setActivities', activities })
   }
 
+  // Locking again: the button stays for its exit animation (lock-leave in styles.css) while the dog waves goodbye.
+  function logOut() {
+    lock()
+    setUnlocked(false)
+    setLeaving(true)
+    window.setTimeout(() => setLeaving(false), LOCK_LEAVE_MS)
+    dogRef.current?.react('wave', 2400)
+  }
+
   // Locks parent mode again. Desktop shows it beside Add chores; a phone shows it at the top.
-  const lockButton = unlocked && (
-    <Button variant="quiet" square aria-label="Lock parent mode" onClick={() => {
-        lock()
-        setUnlocked(false)
-      }}>
+  const lockButton = (unlocked || leaving) && (
+    <Button variant="quiet" square aria-label="Lock parent mode" disabled={!unlocked} onClick={logOut}>
       <Icon icon={SquareUnlock02Icon} />
     </Button>
   )
+  const lockLeaving = leaving && !unlocked ? ' lock--leaving' : ''
 
   return (
     <div className="app">
@@ -196,10 +205,10 @@ export default function App() {
               <Icon icon={unlocked ? Add01Icon : SquareLock02Icon} className="nudge-start" />
               {unlocked ? 'Add chores' : 'Parents'}
             </Button>
-            {lockButton && <span className="lock-beside">{lockButton}</span>}
+            {lockButton && <span className={`lock-beside${lockLeaving}`}>{lockButton}</span>}
           </div>
         </div>
-        {lockButton && <div className="lock-top">{lockButton}</div>}
+        {lockButton && <div className={`lock-top${lockLeaving}`}>{lockButton}</div>}
       </header>
 
       <div className="overview">
