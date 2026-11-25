@@ -1,0 +1,72 @@
+/* Aurora along the top edge, fading into the grey canvas by mid-page. */
+.aurora-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  background: #f4f4f4;
+  pointer-events: none;
+}
+
+.aurora-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(30px);
+  will-change: transform;
+}
+
+/* Purple, top-left corner */
+.aurora-blob--purple {
+  top: -40vh;
+  left: -30vw;
+  width: 60vw;
+  height: 80vh;
+  background: radial-gradient(closest-side, #dda1ed, rgb(221 161 237 / 0.7) 40%, transparent);
+  animation: aurora-drift-1 26s ease-in-out infinite alternate;
+}
+
+/* Pink, across the top centre */
+.aurora-blob--pink {
+  top: -40vh;
+  left: 5vw;
+  width: 65vw;
+  height: 85vh;
+  background: radial-gradient(closest-side, #ffd5ed, rgb(255 213 237 / 0.6) 50%, transparent);
+  animation: aurora-drift-2 30s ease-in-out infinite alternate;
+}
+
+/* Peach, top centre-right */
+.aurora-blob--peach {
+  top: -35vh;
+  left: 40vw;
+  width: 50vw;
+  height: 85vh;
+  background: radial-gradient(closest-side, #ffe2cb, rgb(255 226 203 / 0.6) 50%, transparent);
+  animation: aurora-drift-1 34s ease-in-out infinite alternate-reverse;
+}
+
+/* Orange, top-right corner */
+.aurora-blob--orange {
+  top: -45vh;
+  right: -30vw;
+  width: 60vw;
+  height: 90vh;
+  background: radial-gradient(closest-side, #fcac70, rgb(252 172 112 / 0.65) 40%, transparent);
+  animation: aurora-drift-2 24s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes aurora-drift-1 {
+  from { transform: translate(0, 0) scale(1); }
+  to   { transform: translate(4vw, 3vh) scale(1.08); }
+}
+
+@keyframes aurora-drift-2 {
+  from { transform: translate(0, 0) scale(1.05); }
+  to   { transform: translate(-4vw, 2vh) scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aurora-blob {
+    animation: none;
+  }
+}

@@ -70,6 +70,8 @@ button {
 /* ── Layout ── */
 
 .app {
+  position: relative;
+  z-index: 1;
   max-width: 1360px;
   margin: 0 auto;
   padding: var(--space-9);
@@ -563,10 +565,10 @@ button {
 }
 
 .summary__total {
-  font-family: var(--font-mono);
-  font-size: var(--text-4xl);
-  font-weight: var(--weight-semibold);
-  line-height: 28px;
+  font-family: "Fredoka", var(--font-sans);
+  font-size: 36px;
+  font-weight: var(--weight-medium);
+  line-height: 40px;
   font-variant-numeric: tabular-nums;
 }
 

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Add01Icon, ArrowLeft01Icon, ArrowRight01Icon, Delete02Icon, SquareLock02Icon, SquareUnlock02Icon } from '@hugeicons/core-free-icons'
+import AuroraBackground from './AuroraBackground'
 import ChoresSheet from './ChoresSheet'
 import DogAvatar, { type DogHandle } from './DogAvatar'
 import { AVATAR_URL, KID_NAME } from './kid'
@@ -172,6 +173,8 @@ export default function App() {
   const lockLeaving = leaving && !unlocked ? ' lock--leaving' : ''
 
   return (
+    <>
+    <AuroraBackground />
     <div className="app">
       <header className="header">
         <div className="greeting">
@@ -377,5 +380,6 @@ export default function App() {
         </div>
       )}
     </div>
+    </>
   )
 }

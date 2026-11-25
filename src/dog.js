@@ -3,12 +3,11 @@
 import * as THREE from 'three';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 
-// host: the element the canvas fills. bg: the colour behind the dog (the canvas is opaque).
+// host: the element the canvas fills.
 // onReady: called once the first frames are drawn.
-export function mountDog(host, bg, onReady) {
+export function mountDog(host, onReady) {
 // ---------- palette (from the character sheet) ----------
 const C = {
-  bg,
   fur: '#d87430', furTip: '#ffb97c', lid: '#d2853f',            // ginger plush: darker at the root, lighter at the tip
   nose: '#4a2513', eye: '#0d0b0c', mouth: '#5b2a1a', blush: '#ee7f6c',
 };
@@ -20,19 +19,19 @@ const V3 = (x = 0, y = 0, z = 0) => new THREE.Vector3(x, y, z);
 const AXIS_X = V3(1, 0, 0), AXIS_Y = V3(0, 1, 0), AXIS_Z = V3(0, 0, 1);
 
 // ---------- renderer / scene ----------
-// The drawing buffer is opaque. The plush writes partial alpha for its soft strand edges (alpha to coverage), and in a
-// buffer that keeps alpha the page behind would shine through those pixels.
+// The drawing buffer is transparent so the page shows behind the dog. The plush shells blend premultiplied "over"
+// each other, so inner strands stay solid against the body and only the outer edges let the page through.
 const glCanvas = document.createElement('canvas');
-const gl = glCanvas.getContext('webgl2', { alpha: false, antialias: true });
+const gl = glCanvas.getContext('webgl2', { alpha: true, premultipliedAlpha: true, antialias: true });
 if (!gl) throw new Error('WebGL2 is not available');
 const renderer = new THREE.WebGLRenderer({ canvas: glCanvas, context: gl, antialias: true });
 renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5));
 renderer.setSize(host.clientWidth, host.clientHeight);
 renderer.toneMapping = THREE.NeutralToneMapping;
+renderer.setClearColor(0x000000, 0);
 host.append(renderer.domElement);
 
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(C.bg);
 const pmrem = new THREE.PMREMGenerator(renderer);
 scene.environment = pmrem.fromScene(new RoomEnvironment()).texture;
 scene.environmentIntensity = 0.4;
@@ -276,6 +275,7 @@ const plushFrag = /* glsl */`
     gl_FragColor = vec4(lit, a);
     #include <tonemapping_fragment>
     #include <colorspace_fragment>
+    gl_FragColor.rgb *= gl_FragColor.a;
   }`;
 
 const furGroups = [];
@@ -298,6 +298,7 @@ function plush(geo, o) {
     const mat = new THREE.ShaderMaterial({
       uniforms: { ...shared, ...own, uLayer: { value: i / (o.layers - 1) } },
       vertexShader: plushVert, fragmentShader: plushFrag, alphaToCoverage: true,
+      blending: THREE.CustomBlending, blendSrc: THREE.OneFactor, blendDst: THREE.OneMinusSrcAlphaFactor,
     });
     group.add(new THREE.Mesh(geo, mat));
   }

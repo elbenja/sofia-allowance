@@ -21,8 +21,7 @@ const DogAvatar = forwardRef<DogHandle>(function DogAvatar(_, ref) {
     import('./dog')
       .then(({ mountDog }) => {
         if (cancelled || !host.current) return
-        const bg = getComputedStyle(document.body).backgroundColor
-        dog.current = mountDog(host.current, bg, () => setReady(true))
+        dog.current = mountDog(host.current, () => setReady(true))
       })
       .catch(() => {}) // no WebGL2: the picture stays
     return () => {
