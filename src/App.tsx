@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { Add01Icon, ArrowLeft01Icon, ArrowRight01Icon, Delete02Icon, SquareLock02Icon, SquareUnlock02Icon } from '@hugeicons/core-free-icons'
+import { Add01Icon, Delete02Icon, SquareLock02Icon, SquareUnlock02Icon } from '@hugeicons/core-free-icons'
 import AuroraBackground from './AuroraBackground'
 import ChoresSheet from './ChoresSheet'
 import DogAvatar, { type DogHandle } from './DogAvatar'
@@ -189,18 +189,6 @@ export default function App() {
         </div>
 
         <div className="controls">
-          <div className="switcher">
-            <Button variant="quiet" square aria-label="Previous month" onClick={() => goMonth(shiftMonth(month, -1))}>
-              <Icon icon={ArrowLeft01Icon} className="nudge-left" />
-            </Button>
-            <span key={month} className="switcher__label" aria-live="polite">
-              <span className="wide">{monthName}</span>
-              <span className="narrow">{monthName.slice(0, 3)}</span> {year}
-            </span>
-            <Button variant="quiet" square aria-label="Next month" onClick={() => goMonth(shiftMonth(month, 1))}>
-              <Icon icon={ArrowRight01Icon} className="nudge-right" />
-            </Button>
-          </div>
           {/* Parent actions share one floating container: locked, a single "Parents"
               button; unlocked, "Add chores" plus the button that locks again. */}
           <div className="parent-actions">

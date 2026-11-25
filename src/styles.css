@@ -304,14 +304,6 @@ button {
     animation: sheen var(--dur-sheen) var(--ease-out);
   }
 
-  .btn:hover:not(:disabled) .nudge-left {
-    transform: translateX(-2px);
-  }
-
-  .btn:hover:not(:disabled) .nudge-right {
-    transform: translateX(2px);
-  }
-
   .btn:hover:not(:disabled) .nudge-start {
     transform: translateX(-1px) rotate(-5deg);
   }
@@ -450,9 +442,8 @@ button {
   transform: none;
 }
 
-/* ── Month switcher ── */
+/* ── Parent actions ── */
 
-.switcher,
 .parent-actions,
 .lock-top {
   display: flex;
@@ -462,10 +453,6 @@ button {
   background: var(--surface-float);
   border-radius: var(--radius-2xl);
   box-shadow: var(--shadow-float);
-}
-
-.switcher {
-  gap: var(--space-10);
 }
 
 .lock-beside {
@@ -494,14 +481,6 @@ button {
 
 .lock--leaving .icon {
   animation: lock-leave-icon 700ms forwards;
-}
-
-.switcher__label {
-  min-width: 132px;
-  text-align: center;
-  font-size: var(--text-md);
-  font-weight: var(--weight-semibold);
-  animation: float-in var(--dur-base) var(--ease-out);
 }
 
 /* ── Tips summary ── */
@@ -1220,7 +1199,7 @@ button {
     z-index: 2;
   }
 
-  /* Month switcher and Add chores sit in thumb reach at the bottom. */
+  /* Add chores sits in thumb reach at the bottom. */
   .controls {
     position: fixed;
     left: 0;
@@ -1231,19 +1210,12 @@ button {
     background: linear-gradient(transparent, var(--surface-canvas) 36%);
   }
 
-  .switcher {
+  .parent-actions {
     flex: 1;
-    min-width: 0;
-    gap: 0;
-  }
-
-  .switcher__label {
-    flex: 1;
-    min-width: 0;
-    white-space: nowrap;
   }
 
   .add {
+    flex: 1;
     padding: 0 var(--space-6);
   }
 
