@@ -14,6 +14,7 @@ It was built for one family, so expect some rough edges. It's shared as-is.
 browser ──► Vercel ──────────────────────────► Apps Script web app ──► Google Sheet
             middleware.ts   site password gate
             api/login.ts    sets the login cookie
+            api/logout.ts   clears it (Sign out, under the avatar)
             api/sheet.ts    checks the parent PIN, then adds the secret key
 ```
 

@@ -128,6 +128,34 @@ button {
   object-fit: cover;
 }
 
+/* ── Account menu: the avatar opens a small card with Sign out ── */
+
+.account {
+  position: relative;
+  z-index: 3; /* above the dog and the cards */
+}
+
+button.avatar {
+  transition: transform var(--dur-slow) var(--ease-spring-out);
+}
+
+button.avatar:active {
+  transform: scale(var(--press-scale-sm));
+  transition-duration: var(--dur-instant);
+}
+
+.account__menu {
+  position: absolute;
+  top: calc(100% + var(--space-4));
+  left: 0;
+  padding: var(--space-3);
+  border-radius: var(--radius-xl);
+  background: var(--surface-float);
+  box-shadow: var(--shadow-float);
+  transform-origin: top left;
+  animation: float-in var(--dur-base) var(--ease-out);
+}
+
 .controls {
   display: flex;
   align-items: center;
@@ -469,7 +497,7 @@ button {
   display: none;
 }
 
-/* Logging out: the lock rounds into a circle as its icon fades, shrinks to a dot, and is gone.
+/* Locking parent mode: the lock rounds into a circle as its icon fades, shrinks to a dot, and is gone.
    On a phone the floating tile goes; on desktop the button fills in so the shape shows, then closes its gap. */
 .lock--leaving {
   pointer-events: none;
@@ -486,6 +514,34 @@ button {
 
 .lock--leaving .icon {
   animation: lock-leave-icon 700ms forwards;
+}
+
+/* ── Signing out: everything drops away one after another; the tips card and the
+   waving dog go last. SIGN_OUT_MS in App.tsx waits for this to end. ── */
+
+.app--leaving .greeting,
+.app--leaving .controls,
+.app--leaving .lock-top,
+.app--leaving .overview > .card,
+.app--leaving .details > .card,
+.app--leaving .summary-wrap {
+  animation: drop-out 500ms var(--ease-in) both;
+}
+
+.app--leaving .overview > .card {
+  animation-delay: 100ms;
+}
+
+.app--leaving .details > .card:nth-child(1) {
+  animation-delay: 180ms;
+}
+
+.app--leaving .details > .card:nth-child(2) {
+  animation-delay: 260ms;
+}
+
+.app--leaving .summary-wrap {
+  animation-delay: 950ms;
 }
 
 /* ── Tips summary ── */
@@ -532,14 +588,6 @@ button {
   cursor: pointer;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
-}
-
-.dog__poster {
-  position: absolute;
-  left: 20px;
-  bottom: -37px;
-  width: 129px;
-  pointer-events: none;
 }
 
 .summary__label {
@@ -1054,6 +1102,13 @@ button {
   }
 }
 
+@keyframes drop-out {
+  to {
+    opacity: 0;
+    transform: translateY(32px);
+  }
+}
+
 @keyframes item-in {
   from {
     opacity: 0;
@@ -1240,12 +1295,6 @@ button {
     right: var(--space-9);
     width: 143px;
     height: 154px;
-  }
-
-  .dog__poster {
-    left: 23px;
-    bottom: -29px;
-    width: 97px;
   }
 
   .bars {

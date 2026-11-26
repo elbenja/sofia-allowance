@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
-import { Add01Icon, Delete02Icon, SquareLock02Icon, SquareUnlock02Icon } from '@hugeicons/core-free-icons'
+import { Add01Icon, Delete02Icon, Logout03Icon, SquareLock02Icon, SquareUnlock02Icon } from '@hugeicons/core-free-icons'
 import AuroraBackground from './AuroraBackground'
 import ChoresSheet from './ChoresSheet'
 import DogAvatar, { type DogHandle } from './DogAvatar'
 import { AVATAR_URL, KID_NAME } from './kid'
 import { chores, money, pad, shortMoney } from './format'
-import { fetchData, load, lock, save, send, type Activity, type Change, type Data, type Entry } from './store'
+import { fetchData, forget, load, lock, save, send, type Activity, type Change, type Data, type Entry } from './store'
 import { Button, Count, Icon, IconTile } from './ui'
 
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
@@ -14,6 +14,7 @@ const MONTH_COLORS = ['#fc1264', '#ea1679', '#d71a8f', '#c51da4', '#b121bb', '#a
 const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] // Date.getDay() order
 const CALENDAR_WEEKDAYS = [...WEEKDAYS.slice(1), WEEKDAYS[0]] // the calendar starts on Monday
 const LOCK_LEAVE_MS = 700 // matches the lock-leave animation in styles.css
+const SIGN_OUT_MS = 1600 // the cards' drop-out in styles.css (.app--leaving) ends by then
 
 const sum = (list: Entry[]) => list.reduce((t, e) => t + e.amount, 0)
 
@@ -38,11 +39,14 @@ export default function App() {
   const [month, setMonth] = useState(today.slice(0, 7))
   const [day, setDay] = useState(today)
   const [unlocked, setUnlocked] = useState(false)
-  const [leaving, setLeaving] = useState(false) // the lock button's exit after logging out
+  const [leaving, setLeaving] = useState(false) // the lock button's exit after locking parent mode
   const [sheetOpen, setSheetOpen] = useState(false)
   const [freshId, setFreshId] = useState<string | null>(null)
   const [toast, setToast] = useState<{ text: string; undo?: Entry } | null>(null)
   const [loading, setLoading] = useState(data.activities.length === 0)
+  const [accountOpen, setAccountOpen] = useState(false)
+  const [signingOut, setSigningOut] = useState(false)
+  const accountRef = useRef<HTMLDivElement>(null)
   const logRef = useRef<HTMLDivElement>(null)
   const dogRef = useRef<DogHandle>(null)
 
@@ -80,6 +84,19 @@ export default function App() {
     const t = window.setTimeout(() => setToast(null), 5000)
     return () => window.clearTimeout(t)
   }, [toast])
+
+  // The account menu closes on a tap anywhere else, or on Escape.
+  useEffect(() => {
+    if (!accountOpen) return
+    const onPointer = (e: PointerEvent) => !accountRef.current?.contains(e.target as Node) && setAccountOpen(false)
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setAccountOpen(false)
+    document.addEventListener('pointerdown', onPointer)
+    document.addEventListener('keydown', onKey)
+    return () => {
+      document.removeEventListener('pointerdown', onPointer)
+      document.removeEventListener('keydown', onKey)
+    }
+  }, [accountOpen])
 
   // Picking a day brings its entries into view inside the log (desktop only:
   // on a phone the log is not a scroll box, and the page must not jump).
@@ -160,7 +177,7 @@ export default function App() {
   }
 
   // Locking again: the button stays for its exit animation (lock-leave in styles.css) while the dog waves goodbye.
-  function logOut() {
+  function lockParentMode() {
     lock()
     setUnlocked(false)
     setLeaving(true)
@@ -168,9 +185,29 @@ export default function App() {
     dogRef.current?.react('wave', 2400)
   }
 
+  // Signing out: the dog waves goodbye while the cards drop away (.app--leaving in
+  // styles.css), then the password page takes over. The server clears the cookie.
+  async function signOut() {
+    setAccountOpen(false)
+    setSigningOut(true)
+    dogRef.current?.react('wave', 2400)
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const animation = new Promise((r) => window.setTimeout(r, reduceMotion ? 0 : SIGN_OUT_MS))
+    const res = await fetch('/api/logout', { method: 'POST' }).catch(() => null)
+    if (!res?.ok) {
+      setSigningOut(false)
+      setToast({ text: 'Could not sign out. Check the connection.' })
+      return
+    }
+    forget()
+    lock()
+    await animation
+    window.location.replace('/login')
+  }
+
   // Locks parent mode again. Desktop shows it beside Add chores; a phone shows it at the top.
   const lockButton = (unlocked || leaving) && (
-    <Button variant="quiet" square aria-label="Lock parent mode" disabled={!unlocked} onClick={logOut}>
+    <Button variant="quiet" square aria-label="Lock parent mode" disabled={!unlocked} onClick={lockParentMode}>
       <Icon icon={SquareUnlock02Icon} />
     </Button>
   )
@@ -179,13 +216,30 @@ export default function App() {
   return (
     <>
     <AuroraBackground parent={unlocked} />
-    <div className={`app${unlocked ? ' app--parent' : ''}`}>
+    <div className={`app${unlocked ? ' app--parent' : ''}${signingOut ? ' app--leaving' : ''}`} inert={signingOut}>
       <header className="header">
         <div className="greeting">
-          {/* Without a picture, the circle shows the name's first letter. */}
-          <span className="avatar" aria-hidden="true">
-            {AVATAR_URL ? <img src={AVATAR_URL} alt="" width={34} height={34} /> : KID_NAME.charAt(0)}
-          </span>
+          {/* Tapping the avatar opens the account menu. Without a picture, the circle shows the name's first letter. */}
+          <div className="account" ref={accountRef}>
+            <button
+              type="button"
+              className="avatar"
+              aria-label="Account"
+              aria-haspopup="menu"
+              aria-expanded={accountOpen}
+              onClick={() => setAccountOpen(!accountOpen)}
+            >
+              {AVATAR_URL ? <img src={AVATAR_URL} alt="" width={34} height={34} /> : KID_NAME.charAt(0)}
+            </button>
+            {accountOpen && (
+              <div className="account__menu" role="menu">
+                <Button variant="quiet" role="menuitem" autoFocus onClick={signOut}>
+                  <Icon icon={Logout03Icon} className="nudge-start" />
+                  Sign out
+                </Button>
+              </div>
+            )}
+          </div>
           <div>
             <h1>{KID_NAME ? `Hi, ${KID_NAME}` : 'Hi there'}</h1>
             <p>Chores and tips</p>

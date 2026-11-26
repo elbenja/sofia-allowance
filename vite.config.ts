@@ -1,23 +1,29 @@
 import { defineConfig, loadEnv, type Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
-import { hasSession, login } from './server/auth.js'
+import { hasSession, login, logout } from './server/auth.js'
 import { sheet } from './server/sheet.js'
 
-// In `npm run dev` there is no Vercel, so this plays the middleware and the two
+// In `npm run dev` there is no Vercel, so this plays the middleware and the three
 // functions, reading the secrets from .env.local.
 function passwordGate(env: Record<string, string>): Plugin {
   const { password } = env
+  const routes: Record<string, (request: Request) => Response | Promise<Response>> = {
+    '/api/login': (request) => login(request, password, false),
+    '/api/logout': (request) => logout(request, false),
+    '/api/sheet': (request) => sheet(request, env), // signed-in only, checked below
+  }
   return {
     name: 'password-gate',
     configureServer(server) {
       server.middlewares.use(async (req, res, next) => {
         const path = (req.url ?? '/').split('?')[0]
         const authed = await hasSession(req.headers.cookie ?? null, password)
-        if (path === '/api/login' || (path === '/api/sheet' && authed)) {
+        const route = routes[path]
+        if (route && (path !== '/api/sheet' || authed)) {
           const chunks: Buffer[] = []
           for await (const c of req) chunks.push(c as Buffer)
           const request = new Request('http://localhost' + path, { method: req.method, body: req.method === 'POST' ? Buffer.concat(chunks) : undefined })
-          const response = path === '/api/login' ? await login(request, password, false) : await sheet(request, env)
+          const response = await route(request)
           res.statusCode = response.status
           response.headers.forEach((v, k) => res.setHeader(k, v))
           return res.end(await response.text())

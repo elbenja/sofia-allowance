@@ -49,6 +49,15 @@ export function save(data: Data) {
   }
 }
 
+// On sign-out, so the family's data doesn't stay behind in this browser.
+export function forget() {
+  try {
+    localStorage.removeItem(KEY)
+  } catch {
+    // storage blocked: nothing was saved
+  }
+}
+
 // ── Google Sheet ──
 
 export type Change =

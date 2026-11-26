@@ -31,3 +31,11 @@ export async function login(request: Request, password: string | undefined, secu
   const cookie = `${COOKIE}=${await token(password)}; Path=/; Max-Age=${MAX_AGE}; HttpOnly; SameSite=Lax${secure ? '; Secure' : ''}`
   return Response.json({ ok: true }, { headers: { 'Set-Cookie': cookie } })
 }
+
+// Signs this browser out by expiring its cookie. The page can't do it itself,
+// because the cookie is HttpOnly. POST only, so a stray link can't sign anyone out.
+export function logout(request: Request, secure: boolean) {
+  if (request.method !== 'POST') return new Response(null, { status: 405 })
+  const cookie = `${COOKIE}=; Path=/; Max-Age=0; HttpOnly; SameSite=Lax${secure ? '; Secure' : ''}`
+  return Response.json({ ok: true }, { headers: { 'Set-Cookie': cookie } })
+}
