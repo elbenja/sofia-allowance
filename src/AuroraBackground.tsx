@@ -13,7 +13,8 @@ export default function AuroraBackground({ parent }: { parent: boolean }) {
       </div>
       <div className="aurora-layer aurora-layer--parent">
         <div className="aurora-blob aurora-blob--mint" />
-        <div className="aurora-blob aurora-blob--cyan" />
+        <div className="aurora-blob aurora-blob--aqua" />
+        <div className="aurora-blob aurora-blob--deep" />
         <div className="aurora-blob aurora-blob--teal" />
       </div>
     </div>
