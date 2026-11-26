@@ -16,7 +16,7 @@
 /* Parent mode: an opaque layer on top that fades in over the kid aurora. */
 .aurora-layer--parent {
   /* A faint aqua wash along the top so the blobs read as one sweep. */
-  background: linear-gradient(rgb(127 220 216 / 0.4), transparent 20%), #e9ebf0;
+  background: linear-gradient(rgb(127 220 216 / 0.4), transparent 5%), #e9ebf0;
   opacity: 0;
   transition: opacity 800ms ease;
 }
@@ -74,37 +74,37 @@
 
 /* Parent mode, left to right along the top: mint, aqua, deep teal, teal. */
 .aurora-blob--mint {
-  top: -50vh;
+  top: -32vh;
   left: -30vw;
   width: 60vw;
-  height: 85vh;
+  height: 45vh;
   background: radial-gradient(closest-side, #9cf5db, rgb(156 245 219 / 0.7) 40%, transparent);
   animation: aurora-drift-1 26s ease-in-out infinite alternate;
 }
 
 .aurora-blob--aqua {
-  top: -50vh;
+  top: -32vh;
   left: 5vw;
   width: 55vw;
-  height: 80vh;
+  height: 42vh;
   background: radial-gradient(closest-side, #7fdcd8, rgb(127 220 216 / 0.7) 45%, transparent);
   animation: aurora-drift-2 30s ease-in-out infinite alternate;
 }
 
 .aurora-blob--deep {
-  top: -50vh;
+  top: -32vh;
   left: 35vw;
   width: 55vw;
-  height: 85vh;
+  height: 45vh;
   background: radial-gradient(closest-side, #54b5b5, rgb(84 181 181 / 0.8) 45%, transparent);
   animation: aurora-drift-1 34s ease-in-out infinite alternate-reverse;
 }
 
 .aurora-blob--teal {
-  top: -55vh;
+  top: -35vh;
   right: -25vw;
   width: 60vw;
-  height: 100vh;
+  height: 52vh;
   background: radial-gradient(closest-side, #51bbb1, rgb(81 187 177 / 0.9) 45%, transparent);
   animation: aurora-drift-2 24s ease-in-out infinite alternate-reverse;
 }
