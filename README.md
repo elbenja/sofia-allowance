@@ -72,6 +72,23 @@ The four secrets are server-only and never reach the browser. Keep their names l
 | `sheet_url`  | The Apps Script web-app URL from step 2.                                 |
 | `sheet_key`  | The random secret from step 2, the same value as the `PARENT_PIN` property. |
 
+#### The password and the parent PIN
+
+They're two separate locks, and you choose both values yourself:
+
+- **`password`** keeps strangers out. Anyone who opens the site is sent to the login page until they enter it. A correct login keeps that browser signed in for 90 days. To sign everyone out, change the password and redeploy. Give it to everyone who should see the dashboard, including the kid.
+- **`parent_pin`** keeps the kid from logging their own chores. On the dashboard, tap **Parents** and enter the PIN to unlock parent mode, where you add chores, remove entries and edit the chore list. Parent mode stays unlocked until you tap the lock button or reload the page. The PIN is checked on the server and never stored in the browser. Keep it to the parents. It can be any text, but the field shows a number pad on phones, so digits work best.
+
+Each wrong password or PIN waits a moment before answering, to slow down guessing. Both are plain text comparisons, so pick values that are hard to guess.
+
+#### Adding them to the Vercel project
+
+1. Open your project on vercel.com and go to **Settings → Environment Variables**.
+2. Add each variable: type the name exactly as shown above (lowercase, e.g. `password`, `parent_pin`), paste the value, and tick the environments it applies to. Tick at least **Production**, and **Preview** too if you use preview deployments.
+3. Save, then open **Deployments**, click **⋯** on the latest one and choose **Redeploy**. Vercel only reads variables when it deploys.
+
+For local development, the same names go in `.env.local` (see step 4). Vercel doesn't read that file, and git ignores it.
+
 Three optional settings personalise the page. They're shown to anyone who opens the site, so they aren't secrets. The `VITE_` prefix is what sends them to the browser.
 
 | Variable          | What it is                                                                                               |
