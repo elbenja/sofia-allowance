@@ -54,7 +54,7 @@ function Login() {
             aria-describedby={error ? 'login-error' : undefined}
           />
           {error && (
-            <span id="login-error" role="alert" className="pin__error">
+            <span id="login-error" role="alert" className="form-error">
               {error}
             </span>
           )}

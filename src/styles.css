@@ -995,7 +995,7 @@ button {
   letter-spacing: 0.3em;
 }
 
-.pin__error {
+.form-error {
   padding: var(--space-3) var(--space-5);
   border-radius: var(--radius-sm);
   background: var(--red-50);

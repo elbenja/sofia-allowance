@@ -4,18 +4,17 @@ import AuroraBackground from './AuroraBackground'
 import ChoresSheet from './ChoresSheet'
 import DogAvatar, { type DogHandle } from './DogAvatar'
 import { AVATAR_URL, KID_NAME } from './kid'
+import { chores, money, pad, shortMoney } from './format'
 import { fetchData, load, lock, save, send, type Activity, type Change, type Data, type Entry } from './store'
 import { Button, Count, Icon, IconTile } from './ui'
 
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 // One colour per month, pink in January through blue in December.
 const MONTH_COLORS = ['#fc1264', '#ea1679', '#d71a8f', '#c51da4', '#b121bb', '#a124ce', '#8e29df', '#7134e1', '#583ee2', '#3c48e3', '#2153e4', '#035fe5']
-const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] // Date.getDay() order
+const CALENDAR_WEEKDAYS = [...WEEKDAYS.slice(1), WEEKDAYS[0]] // the calendar starts on Monday
 const LOCK_LEAVE_MS = 700 // matches the lock-leave animation in styles.css
 
-const pad = (n: number) => String(n).padStart(2, '0')
-const money = (n: number) => '$' + n.toFixed(2)
-const shortMoney = (n: number) => '$' + (Number.isInteger(n) ? n : n.toFixed(2))
 const sum = (list: Entry[]) => list.reduce((t, e) => t + e.amount, 0)
 
 function todayKey() {
@@ -97,13 +96,18 @@ export default function App() {
   const inMonth = data.entries.filter((e) => e.date.startsWith(month))
   const total = sum(inMonth)
   const previousMonth = shiftMonth(month, -1)
+  const previousMonthName = MONTHS[Number(previousMonth.slice(5, 7)) - 1]
   const previousTotal = sum(data.entries.filter((e) => e.date.startsWith(previousMonth)))
   const delta = total - previousTotal
 
   const byDay = new Map<string, Entry[]>()
   for (const e of inMonth) byDay.set(e.date, [...(byDay.get(e.date) ?? []), e])
-  const days = [...byDay.entries()].sort((a, b) => (a[0] < b[0] ? 1 : -1))
-  const best = days.reduce<[string, number] | null>((top, [date, list]) => (top && top[1] >= sum(list) ? top : [date, sum(list)]), null)
+  const days = [...byDay.entries()].sort((a, b) => (a[0] < b[0] ? 1 : -1)) // newest first
+  let best: { date: string; amount: number } | null = null
+  for (const [date, list] of days) {
+    const amount = sum(list)
+    if (!best || amount > best.amount) best = { date, amount }
+  }
 
   const yearTotals = MONTHS.map((_, i) => sum(data.entries.filter((e) => e.date.startsWith(`${year}-${pad(i + 1)}`))))
   const yearMax = Math.max(...yearTotals, 1)
@@ -214,15 +218,13 @@ export default function App() {
               {(total > 0 || previousTotal > 0) && (
                 <span className={`chip chip--mono${delta >= 0 ? ' chip--up' : ''}`}>
                   {delta >= 0 ? '+' : '−'}
-                  {money(Math.abs(delta))} vs {MONTHS[Number(previousMonth.slice(5, 7)) - 1]}
+                  {money(Math.abs(delta))} vs {previousMonthName}
                 </span>
               )}
-              <span className="chip">
-                {inMonth.length} {inMonth.length === 1 ? 'chore' : 'chores'}
-              </span>
+              <span className="chip">{chores(inMonth.length)}</span>
               {best && (
                 <span className="chip">
-                  Best day: {dayLabel(best[0])} · {money(best[1])}
+                  Best day: {dayLabel(best.date)} · {money(best.amount)}
                 </span>
               )}
             </div>
@@ -264,7 +266,7 @@ export default function App() {
             <span className="hint">Pick a day</span>
           </div>
           <div className="week week--names" aria-hidden="true">
-            {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((w) => (
+            {CALENDAR_WEEKDAYS.map((w) => (
               <span key={w}>{w}</span>
             ))}
           </div>
@@ -295,9 +297,7 @@ export default function App() {
             <div>
               <strong>{dayLabel(day)}</strong>
               <span key={day + selectedEntries.length}>
-                {selectedEntries.length === 0
-                  ? 'No chores yet'
-                  : `${selectedEntries.length} ${selectedEntries.length === 1 ? 'chore' : 'chores'} · ${money(sum(selectedEntries))}`}
+                {selectedEntries.length === 0 ? 'No chores yet' : `${chores(selectedEntries.length)} · ${money(sum(selectedEntries))}`}
               </span>
             </div>
             {unlocked && (

@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState, type FormEvent } from 'react'
+import { useEffect, useRef, useState, type FormEvent, type RefObject } from 'react'
 import { Cancel01Icon, Delete02Icon, PencilEdit02Icon } from '@hugeicons/core-free-icons'
+import { shortMoney } from './format'
 import { unlock, type Activity, type Entry } from './store'
 import { Button, Icon, IconTile, TallyButton } from './ui'
 
@@ -20,40 +21,36 @@ const parseAmount = (raw: string) => {
   return Number.isFinite(n) && n > 0 ? Math.round(n * 100) / 100 : null
 }
 
+// Keeps a <dialog> in step with `open`, and focuses `focus` inside it when it opens.
+function useModal(ref: RefObject<HTMLDialogElement | null>, open: boolean, focus: string) {
+  useEffect(() => {
+    const dialog = ref.current!
+    if (open && !dialog.open) {
+      dialog.showModal()
+      dialog.querySelector<HTMLElement>(focus)?.focus()
+    }
+    if (!open && dialog.open) dialog.close()
+  }, [ref, open, focus])
+}
+
 export default function ChoresSheet({ open, onClose, unlocked, onUnlock, dayLabel, dayEntries, activities, onLog, onChange }: Props) {
-  const ref = useRef<HTMLDialogElement>(null)
-  const addRef = useRef<HTMLDialogElement>(null)
+  const sheetRef = useRef<HTMLDialogElement>(null)
+  const customRef = useRef<HTMLDialogElement>(null)
   const [editing, setEditing] = useState(false)
   const [adding, setAdding] = useState(false)
   const [newName, setNewName] = useState('')
   const [newAmount, setNewAmount] = useState('')
 
-  useEffect(() => {
-    const dialog = ref.current!
-    if (open && !dialog.open) {
-      dialog.showModal()
-      dialog.querySelector<HTMLElement>('#parent-pin')?.focus()
-    }
-    if (!open && dialog.open) dialog.close()
-  }, [open])
-
+  useModal(sheetRef, open, '#parent-pin')
   // The form for a chore that is not on the list opens in its own small modal, on top of this one.
-  useEffect(() => {
-    const dialog = addRef.current!
-    if (adding && !dialog.open) {
-      dialog.showModal()
-      dialog.querySelector<HTMLElement>('input')?.focus()
-    }
-    if (!adding && dialog.open) dialog.close()
-  }, [adding])
+  useModal(customRef, adding, 'input')
 
   const update = (id: string, patch: Partial<Activity>) => onChange(activities.map((a) => (a.id === id ? { ...a, ...patch } : a)))
 
-  const custom = () => {
-    const name = newName.trim()
-    const amount = parseAmount(newAmount)
-    return name && amount ? { name, amount, icon: 'star' as const, tint: '#f0f0f0' } : null
-  }
+  // The chore typed into the "Another chore" form, or null until it has a name and an amount.
+  const customName = newName.trim()
+  const customAmount = parseAmount(newAmount)
+  const custom = customName && customAmount ? { name: customName, amount: customAmount, icon: 'star', tint: '#f0f0f0' } : null
   const clearCustom = () => {
     setNewName('')
     setNewAmount('')
@@ -62,14 +59,14 @@ export default function ChoresSheet({ open, onClose, unlocked, onUnlock, dayLabe
   return (
     <>
       <dialog
-        ref={ref}
+        ref={sheetRef}
         className="sheet"
         aria-label="Add chores"
         onClose={() => {
           setEditing(false)
           onClose()
         }}
-        onClick={(e) => e.target === ref.current && onClose()}
+        onClick={(e) => e.target === sheetRef.current && onClose()}
       >
         <div className="sheet__body">
           <div className="card__head sheet__head">
@@ -89,51 +86,49 @@ export default function ChoresSheet({ open, onClose, unlocked, onUnlock, dayLabe
           {!unlocked ? (
             <PinForm onUnlock={onUnlock} />
           ) : (
-            <>
-              <div>
-                {activities.map((a) => (
-                  <div key={a.id} className="activity">
-                    <IconTile icon={a.icon} tint={a.tint} size={36} />
-                    {editing ? (
-                      <>
+            <div>
+              {activities.map((a) => (
+                <div key={a.id} className="activity">
+                  <IconTile icon={a.icon} tint={a.tint} size={36} />
+                  {editing ? (
+                    <>
+                      <input
+                        className="field activity__name"
+                        defaultValue={a.name}
+                        aria-label={`Name of ${a.name}`}
+                        onBlur={(e) => e.target.value.trim() && update(a.id, { name: e.target.value.trim() })}
+                      />
+                      <label className="field field--money">
+                        <span aria-hidden="true">$</span>
                         <input
-                          className="field activity__name"
-                          defaultValue={a.name}
-                          aria-label={`Name of ${a.name}`}
-                          onBlur={(e) => e.target.value.trim() && update(a.id, { name: e.target.value.trim() })}
+                          defaultValue={a.amount}
+                          inputMode="decimal"
+                          aria-label={`Amount for ${a.name}`}
+                          onBlur={(e) => {
+                            const amount = parseAmount(e.target.value)
+                            if (amount) update(a.id, { amount })
+                            else e.target.value = String(a.amount)
+                          }}
                         />
-                        <label className="field field--money">
-                          <span aria-hidden="true">$</span>
-                          <input
-                            defaultValue={a.amount}
-                            inputMode="decimal"
-                            aria-label={`Amount for ${a.name}`}
-                            onBlur={(e) => {
-                              const amount = parseAmount(e.target.value)
-                              if (amount) update(a.id, { amount })
-                              else e.target.value = String(a.amount)
-                            }}
-                          />
-                        </label>
-                        <Button variant="quiet" square className="danger" aria-label={`Delete ${a.name} from the list`} onClick={() => onChange(activities.filter((x) => x.id !== a.id))}>
-                          <Icon icon={Delete02Icon} />
-                        </Button>
-                      </>
-                    ) : (
-                      <>
-                        <span className="activity__name">{a.name}</span>
-                        <span className="mono">${a.amount}</span>
-                        <TallyButton
-                          label={`Log ${a.name} on ${dayLabel}`}
-                          count={dayEntries.filter((e) => e.name === a.name).length}
-                          onAdd={() => onLog(a)}
-                        />
-                      </>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </>
+                      </label>
+                      <Button variant="quiet" square className="danger" aria-label={`Delete ${a.name} from the list`} onClick={() => onChange(activities.filter((x) => x.id !== a.id))}>
+                        <Icon icon={Delete02Icon} />
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      <span className="activity__name">{a.name}</span>
+                      <span className="mono">{shortMoney(a.amount)}</span>
+                      <TallyButton
+                        label={`Log ${a.name} on ${dayLabel}`}
+                        count={dayEntries.filter((e) => e.name === a.name).length}
+                        onAdd={() => onLog(a)}
+                      />
+                    </>
+                  )}
+                </div>
+              ))}
+            </div>
           )}
 
           <div className="sheet__foot">
@@ -150,14 +145,14 @@ export default function ChoresSheet({ open, onClose, unlocked, onUnlock, dayLabe
       </dialog>
 
       <dialog
-        ref={addRef}
+        ref={customRef}
         className="sheet"
         aria-label="Another chore"
         onClose={() => {
           clearCustom()
           setAdding(false)
         }}
-        onClick={(e) => e.target === addRef.current && setAdding(false)}
+        onClick={(e) => e.target === customRef.current && setAdding(false)}
       >
         <div className="sheet__body">
           <div className="sheet__tools sheet__close">
@@ -174,9 +169,9 @@ export default function ChoresSheet({ open, onClose, unlocked, onUnlock, dayLabe
             </label>
             <Button
               variant="neutral"
-              disabled={!custom()}
+              disabled={!custom}
               onClick={() => {
-                onChange([...activities, { id: crypto.randomUUID(), ...custom()! }])
+                onChange([...activities, { id: crypto.randomUUID(), ...custom! }])
                 setAdding(false)
               }}
             >
@@ -184,9 +179,9 @@ export default function ChoresSheet({ open, onClose, unlocked, onUnlock, dayLabe
             </Button>
             <Button
               variant="solid"
-              disabled={!custom()}
+              disabled={!custom}
               onClick={() => {
-                onLog(custom()!)
+                onLog(custom!)
                 setAdding(false)
               }}
             >
@@ -200,7 +195,7 @@ export default function ChoresSheet({ open, onClose, unlocked, onUnlock, dayLabe
 }
 
 function PinForm({ onUnlock }: { onUnlock: () => void }) {
-  const [pin, setPinValue] = useState('')
+  const [pin, setPin] = useState('')
   const [error, setError] = useState('')
   const [shake, setShake] = useState(0)
   const [busy, setBusy] = useState(false)
@@ -219,7 +214,7 @@ function PinForm({ onUnlock }: { onUnlock: () => void }) {
   function fail(message: string) {
     setError(message)
     setShake((n) => n + 1)
-    setPinValue('')
+    setPin('')
   }
 
   return (
@@ -234,11 +229,11 @@ function PinForm({ onUnlock }: { onUnlock: () => void }) {
         autoComplete="off"
         autoFocus
         value={pin}
-        onChange={(e) => setPinValue(e.target.value)}
+        onChange={(e) => setPin(e.target.value)}
         aria-describedby={error ? 'pin-error' : undefined}
       />
       {error && (
-        <span id="pin-error" role="alert" className="pin__error">
+        <span id="pin-error" role="alert" className="form-error">
           {error}
         </span>
       )}
