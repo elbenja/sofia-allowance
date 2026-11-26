@@ -34,6 +34,13 @@ function Login() {
   return (
     <main className="login">
       <div className="login__wrap">
+        {/* Soft colour that dances behind the card and Leo, mostly along the card's top. */}
+        <div className="login__aurora" aria-hidden="true">
+          <span className="login__blob login__blob--pink" />
+          <span className="login__blob login__blob--coral" />
+          <span className="login__blob login__blob--peach" />
+          <span className="login__blob login__blob--orange" />
+        </div>
         <DogAvatar ref={dog} />
         <form className="card login__card" onSubmit={submit}>
           <div className="login__head">

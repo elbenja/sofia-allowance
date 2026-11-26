@@ -5,6 +5,7 @@
   display: grid;
   place-items: center;
   padding: var(--space-9) var(--space-6);
+  overflow: clip; /* the aurora reaches past the card; never let it scroll the page */
 }
 
 .login__wrap {
@@ -14,7 +15,7 @@
   animation: login-in var(--dur-slower) var(--ease-out) both;
 }
 
-/* Leo at 117% of the dashboard size: box, framing and poster all scaled by 1.17. */
+/* Leo at 117% of the dashboard size: box and framing scaled by 1.17. */
 .login .dog {
   --dog-ppu: 58.5;
   --dog-raise: 28;
@@ -23,12 +24,6 @@
   width: 199px;
   height: 204px;
   transform: translateX(-50%);
-}
-
-.login .dog__poster {
-  left: 23px;
-  bottom: -43px;
-  width: 151px;
 }
 
 .login__card {
@@ -55,6 +50,78 @@
 
 .login__card .btn {
   width: 100%;
+}
+
+/* ── Aurora behind the card and Leo ──
+   Four blurred blobs, left to right: pink, coral, peach, orange. They sit around the
+   card's top edge and come first in the markup, so the dog and the card paint over them. */
+
+.login__aurora {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.login__blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(22px);
+  opacity: 0.6;
+  will-change: transform;
+}
+
+.login__blob--pink {
+  left: -82px;
+  top: -52px;
+  width: 195px;
+  height: 188px;
+  background: radial-gradient(closest-side, #ee8fc9, rgb(238 143 201 / 0.7) 50%, transparent);
+  animation: login-dance-1 5s ease-in-out infinite alternate;
+}
+
+.login__blob--coral {
+  left: -8px;
+  top: -112px;
+  width: 202px;
+  height: 172px;
+  background: radial-gradient(closest-side, #f4a19e, rgb(244 161 158 / 0.7) 50%, transparent);
+  animation: login-dance-2 6s ease-in-out infinite alternate;
+}
+
+.login__blob--peach {
+  right: -30px;
+  top: -105px;
+  width: 195px;
+  height: 158px;
+  background: radial-gradient(closest-side, #f9d3bf, rgb(249 211 191 / 0.7) 50%, transparent);
+  animation: login-dance-3 5.5s ease-in-out infinite alternate;
+}
+
+.login__blob--orange {
+  right: -90px;
+  top: -30px;
+  width: 188px;
+  height: 195px;
+  background: radial-gradient(closest-side, #f6c08e, rgb(246 192 142 / 0.7) 50%, transparent);
+  animation: login-dance-1 6.5s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes login-dance-1 {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(40px, -28px) scale(1.2); }
+  100% { transform: translate(-30px, 30px) scale(0.85); }
+}
+
+@keyframes login-dance-2 {
+  0% { transform: translate(0, 0) scale(1.06); }
+  50% { transform: translate(-44px, 24px) scale(0.85); }
+  100% { transform: translate(34px, -22px) scale(1.18); }
+}
+
+@keyframes login-dance-3 {
+  0% { transform: translate(0, 0) scale(0.95); }
+  50% { transform: translate(30px, 36px) scale(1.2); }
+  100% { transform: translate(-36px, -24px) scale(0.9); }
 }
 
 @keyframes login-in {
