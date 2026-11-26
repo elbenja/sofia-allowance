@@ -174,8 +174,8 @@ export default function App() {
 
   return (
     <>
-    <AuroraBackground />
-    <div className="app">
+    <AuroraBackground parent={unlocked} />
+    <div className={`app${unlocked ? ' app--parent' : ''}`}>
       <header className="header">
         <div className="greeting">
           {/* Without a picture, the circle shows the name's first letter. */}

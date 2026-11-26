@@ -8,6 +8,23 @@
   pointer-events: none;
 }
 
+.aurora-layer {
+  position: absolute;
+  inset: 0;
+}
+
+/* Parent mode: an opaque layer on top that fades in over the kid aurora. */
+.aurora-layer--parent {
+  /* A faint cyan wash along the top so the blobs read as one sweep. */
+  background: linear-gradient(rgb(101 195 199 / 0.4), transparent 25%), #e9ebf0;
+  opacity: 0;
+  transition: opacity 800ms ease;
+}
+
+.aurora-bg--parent .aurora-layer--parent {
+  opacity: 1;
+}
+
 .aurora-blob {
   position: absolute;
   border-radius: 50%;
@@ -17,7 +34,7 @@
 
 /* Purple, top-left corner */
 .aurora-blob--purple {
-  top: -40vh;
+  top: -45vh;
   left: -30vw;
   width: 60vw;
   height: 80vh;
@@ -27,7 +44,7 @@
 
 /* Pink, across the top centre */
 .aurora-blob--pink {
-  top: -40vh;
+  top: -45vh;
   left: 5vw;
   width: 65vw;
   height: 85vh;
@@ -37,7 +54,7 @@
 
 /* Peach, top centre-right */
 .aurora-blob--peach {
-  top: -35vh;
+  top: -40vh;
   left: 40vw;
   width: 50vw;
   height: 85vh;
@@ -47,11 +64,41 @@
 
 /* Orange, top-right corner */
 .aurora-blob--orange {
-  top: -45vh;
+  top: -50vh;
   right: -30vw;
   width: 60vw;
   height: 90vh;
   background: radial-gradient(closest-side, #fcac70, rgb(252 172 112 / 0.65) 40%, transparent);
+  animation: aurora-drift-2 24s ease-in-out infinite alternate-reverse;
+}
+
+/* Mint, top-left corner */
+.aurora-blob--mint {
+  top: -45vh;
+  left: -30vw;
+  width: 65vw;
+  height: 85vh;
+  background: radial-gradient(closest-side, #9cf4db, rgb(156 244 219 / 0.7) 40%, transparent);
+  animation: aurora-drift-1 26s ease-in-out infinite alternate;
+}
+
+/* Cyan, across the top centre */
+.aurora-blob--cyan {
+  top: -45vh;
+  left: 22vw;
+  width: 60vw;
+  height: 75vh;
+  background: radial-gradient(closest-side, #65c3c7, rgb(101 195 199 / 0.7) 45%, transparent);
+  animation: aurora-drift-2 30s ease-in-out infinite alternate;
+}
+
+/* Teal, top-right corner, reaching furthest down */
+.aurora-blob--teal {
+  top: -50vh;
+  right: -25vw;
+  width: 85vw;
+  height: 100vh;
+  background: radial-gradient(closest-side, #4fb7af, rgb(79 183 175 / 0.9) 45%, transparent);
   animation: aurora-drift-2 24s ease-in-out infinite alternate-reverse;
 }
 
@@ -68,5 +115,9 @@
 @media (prefers-reduced-motion: reduce) {
   .aurora-blob {
     animation: none;
+  }
+
+  .aurora-layer--parent {
+    transition: none;
   }
 }

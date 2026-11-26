@@ -80,6 +80,11 @@ button {
   gap: var(--space-9);
 }
 
+/* Parent mode sits on a cooler grey, so the phone's bottom bar fades into it. */
+.app--parent {
+  --surface-canvas: #e9ebf0;
+}
+
 .header {
   display: flex;
   flex-wrap: wrap;
