@@ -34,7 +34,7 @@
 
 /* Purple, top-left corner */
 .aurora-blob--purple {
-  top: -45vh;
+  top: -50vh;
   left: -30vw;
   width: 60vw;
   height: 80vh;
@@ -44,7 +44,7 @@
 
 /* Pink, across the top centre */
 .aurora-blob--pink {
-  top: -45vh;
+  top: -50vh;
   left: 5vw;
   width: 65vw;
   height: 85vh;
@@ -54,7 +54,7 @@
 
 /* Peach, top centre-right */
 .aurora-blob--peach {
-  top: -40vh;
+  top: -45vh;
   left: 40vw;
   width: 50vw;
   height: 85vh;
@@ -64,7 +64,7 @@
 
 /* Orange, top-right corner */
 .aurora-blob--orange {
-  top: -50vh;
+  top: -55vh;
   right: -30vw;
   width: 60vw;
   height: 90vh;
